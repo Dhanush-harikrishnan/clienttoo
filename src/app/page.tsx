@@ -1,113 +1,164 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { MessageSquare, ThumbsUp, ArrowRight } from 'lucide-react'
+import Image from "next/image"
+import { Input } from "@/components/ui/input"
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+   <main>
+     <section className="min-h-[80vh] bg-gradient-to-b from-white to-gray-50">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <header className="py-6">
+          <nav className="flex items-center justify-between">
+            <Link href="/" className="text-xl font-bold">
+              Logo
+            </Link>
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="#features" className="text-gray-600 hover:text-gray-900">
+                Features
+              </Link>
+              <Link href="#pricing" className="text-gray-600 hover:text-gray-900">
+                Pricing
+              </Link>
+              <Link href="#resources" className="text-gray-600 hover:text-gray-900">
+                Resources
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button variant="outline">Join</Button>
+              <Button>Start</Button>
+            </div>
+          </nav>
+        </header>
+
+        {/* Hero */}
+        <div className="py-20">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              Transform Your Instagram Engagement Effortlessly
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Clienttoo revolutionizes how you connect with your audience on Instagram. Our platform automates responses and interactions, turning every engagement into a valuable opportunity.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Button size="lg">Get Started</Button>
+              <Button size="lg" variant="outline">
+                Learn More
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+          <div>
+            <h2 className="text-3xl font-bold mb-6">
+              Instant DM Responses to Boost Engagement
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Respond instantly to keywords in DMs. Clienttoo empowers your business with automated responses to direct messages and comments. Experience seamless interactions that convert engagement into valuable opportunities.
+            </p>
+            <Button variant="outline" className="flex items-center">
+              Learn More <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+          <div className="relative aspect-video">
+            <Image
+              src="/placeholder.svg"
+              alt="Feature illustration"
+              fill
+              className="object-cover rounded-lg"
+            />
+          </div>
+        </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="order-2 md:order-1 relative aspect-video">
+            <Image
+              src="/placeholder.svg"
+              alt="Feature illustration"
+              fill
+              className="object-cover rounded-lg"
+            />
+          </div>
+          <div className="order-1 md:order-2">
+            <h2 className="text-3xl font-bold mb-6">
+              Automated Comment Triggers for Effortless Interaction
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Set up automations that react to comments. Our system allows you to like and reply to comments automatically, ensuring consistent engagement with your audience.
+            </p>
+            <Button variant="outline" className="flex items-center">
+              Learn More <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+    </section>
+    <footer className="bg-gray-900 text-white py-16">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/contact">Contact Us</Link></li>
+              <li><Link href="/support">Support Center</Link></li>
+              <li><Link href="/blog">Blog Posts</Link></li>
+              <li><Link href="/faq">FAQs</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-4">Resources</h3>
+            <ul className="space-y-2">
+              <li><Link href="/webinars">Webinars</Link></li>
+              <li><Link href="/case-studies">Case Studies</Link></li>
+              <li><Link href="/ebooks">E-books</Link></li>
+              <li><Link href="/guides">Guides</Link></li>
+              <li><Link href="/templates">Templates</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-4">Stay Connected</h3>
+            <ul className="space-y-2">
+              <li><Link href="#">Instagram</Link></li>
+              <li><Link href="#">Facebook</Link></li>
+              <li><Link href="#">Twitter</Link></li>
+              <li><Link href="#">LinkedIn</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-4">Subscribe</h3>
+            <p className="text-sm mb-4">
+              Join our newsletter to stay updated on features and releases.
+            </p>
+            <div className="space-y-2">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="bg-gray-800 border-gray-700"
+              />
+              <Button className="w-full">Subscribe</Button>
+            </div>
+            <p className="text-xs mt-2 text-gray-400">
+              By subscribing, you agree to our Privacy Policy and consent to receive updates.
+            </p>
+          </div>
+        </div>
+        <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+          <p>© 2024 Clienttoo. All rights reserved.</p>
+          <div className="flex justify-center space-x-4 mt-4">
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms of Service</Link>
+            <Link href="/cookies">Cookies Settings</Link>
+          </div>
+        </div>
       </div>
-    </main>
+    </footer>
+   </main>
   );
 }

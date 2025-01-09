@@ -27,8 +27,8 @@ export default function Home() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline">Join</Button>
-              <Button>Start</Button>
+              <Button>
+                <Link href="/dashboard">Login</Link></Button>
             </div>
           </nav>
         </header>

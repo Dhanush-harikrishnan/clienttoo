@@ -6,45 +6,45 @@ import { Input } from "@/components/ui/input"
 
 export default function Home() {
   return (
-   <main className="bg-black">
-      <header className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-8">
-          <nav className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold">
-              Logo
+   <main>
+      <header className="bg-gray-900 text-white py-6">
+      <div className="container mx-auto px-4">
+        <nav className="flex items-center justify-between">
+          <Link href="/" className="text-xl font-bold">
+            Logo
+          </Link>
+          <div className="hidden md:flex items-center space-x-8">
+            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
+              Features
             </Link>
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
-                Features
-              </Link>
-              <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
-                Pricing
-              </Link>
-              <Link href="#resources" className="text-gray-300 hover:text-white transition-colors">
-                Resources
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
-                <Link href="/dashboard">Login</Link>
-              </Button>
-            </div>
-          </nav>
-        </div>
-      </header>
+            <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
+              Pricing
+            </Link>
+            <Link href="#resources" className="text-gray-300 hover:text-white transition-colors">
+              Resources
+            </Link>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
+              <Link href="/dashboard">Login</Link>
+            </Button>
+          </div>
+        </nav>
+      </div>
+    </header>
 
-      <section className="min-h-[80vh] bg-gradient-to-b from-gray-900 to-gray-50">
-        <div className="container mx-auto px-8">
+    <section className="min-h-[80vh] bg-gradient-to-b from-gray-900 to-gray-50">
+        <div className="container mx-auto px-4">
           {/* Hero */}
-          <div className="py-24">
+          <div className="py-20">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-5xl md:text-6xl font-bold mb-8 text-white">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
                 Transform Your Instagram Engagement Effortlessly
               </h1>
-              <p className="text-2xl text-gray-300 mb-10">
+              <p className="text-xl text-gray-300 mb-8">
                 Clienttoo revolutionizes how you connect with your audience on Instagram. Our platform automates responses and interactions, turning every engagement into a valuable opportunity.
               </p>
-              <div className="flex justify-center gap-6">
+              <div className="flex justify-center gap-4">
                 <Button size="lg">Get Started</Button>
                 <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
                   Learn More

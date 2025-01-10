@@ -6,99 +6,102 @@ import { Input } from "@/components/ui/input"
 
 export default function Home() {
   return (
-   <main>
-     <section className="min-h-[80vh] bg-gradient-to-b from-white to-gray-50">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <header className="py-6">
+   <main className="bg-black">
+      <header className="bg-gray-900 text-white py-8">
+        <div className="container mx-auto px-8">
           <nav className="flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold">
+            <Link href="/" className="text-2xl font-bold">
               Logo
             </Link>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="text-gray-600 hover:text-gray-900">
+              <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
                 Features
               </Link>
-              <Link href="#pricing" className="text-gray-600 hover:text-gray-900">
+              <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
                 Pricing
               </Link>
-              <Link href="#resources" className="text-gray-600 hover:text-gray-900">
+              <Link href="#resources" className="text-gray-300 hover:text-white transition-colors">
                 Resources
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Button>
-                <Link href="/dashboard">Login</Link></Button>
+              <Button variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
+                <Link href="/dashboard">Login</Link>
+              </Button>
             </div>
           </nav>
-        </header>
+        </div>
+      </header>
 
-        {/* Hero */}
-        <div className="py-20">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Transform Your Instagram Engagement Effortlessly
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Clienttoo revolutionizes how you connect with your audience on Instagram. Our platform automates responses and interactions, turning every engagement into a valuable opportunity.
-            </p>
-            <div className="flex justify-center gap-4">
-              <Button size="lg">Get Started</Button>
-              <Button size="lg" variant="outline">
-                Learn More
+      <section className="min-h-[80vh] bg-gradient-to-b from-gray-900 to-gray-50">
+        <div className="container mx-auto px-8">
+          {/* Hero */}
+          <div className="py-24">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-5xl md:text-6xl font-bold mb-8 text-white">
+                Transform Your Instagram Engagement Effortlessly
+              </h1>
+              <p className="text-2xl text-gray-300 mb-10">
+                Clienttoo revolutionizes how you connect with your audience on Instagram. Our platform automates responses and interactions, turning every engagement into a valuable opportunity.
+              </p>
+              <div className="flex justify-center gap-6">
+                <Button size="lg">Get Started</Button>
+                <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
+                  Learn More
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+            <div>
+              <h2 className="text-3xl font-bold mb-6">
+                Instant DM Responses to Boost Engagement
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Respond instantly to keywords in DMs. Clienttoo empowers your business with automated responses to direct messages and comments. Experience seamless interactions that convert engagement into valuable opportunities.
+              </p>
+              <Button variant="outline" className="flex items-center">
+                Learn More <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+            <div className="relative aspect-video">
+              <Image
+                src="/Telegram-bots-2-1.avif"
+                alt="Feature illustration"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="order-2 md:order-1 relative aspect-video">
+              <Image
+                src="/Telegram-bots-2-1.avif"
+                alt="Feature illustration"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+            <div className="order-1 md:order-2">
+              <h2 className="text-3xl font-bold mb-6">
+                Automated Comment Triggers for Effortless Interaction
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Set up automations that react to comments. Our system allows you to like and reply to comments automatically, ensuring consistent engagement with your audience.
+              </p>
+              <Button variant="outline" className="flex items-center">
+                Learn More <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-          <div>
-            <h2 className="text-3xl font-bold mb-6">
-              Instant DM Responses to Boost Engagement
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Respond instantly to keywords in DMs. Clienttoo empowers your business with automated responses to direct messages and comments. Experience seamless interactions that convert engagement into valuable opportunities.
-            </p>
-            <Button variant="outline" className="flex items-center">
-              Learn More <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-          <div className="relative aspect-video">
-            <Image
-              src="/placeholder.svg"
-              alt="Feature illustration"
-              fill
-              className="object-cover rounded-lg"
-            />
-          </div>
-        </div>
+      </section>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="order-2 md:order-1 relative aspect-video">
-            <Image
-              src="/placeholder.svg"
-              alt="Feature illustration"
-              fill
-              className="object-cover rounded-lg"
-            />
-          </div>
-          <div className="order-1 md:order-2">
-            <h2 className="text-3xl font-bold mb-6">
-              Automated Comment Triggers for Effortless Interaction
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Set up automations that react to comments. Our system allows you to like and reply to comments automatically, ensuring consistent engagement with your audience.
-            </p>
-            <Button variant="outline" className="flex items-center">
-              Learn More <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
-    </section>
     <footer className="bg-gray-900 text-white py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -162,3 +165,4 @@ export default function Home() {
    </main>
   );
 }
+

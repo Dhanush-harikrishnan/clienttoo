@@ -1,14 +1,43 @@
 import { client } from '@/lib/prisma'
 
-export const matchKeyword = async (keyword: string) => {
-  return await client.keyword.findFirst({
+export const matchKeyword = async (text: string) => {
+  // Find all keywords that might match
+  const keywords = await client.keyword.findMany({
     where: {
-      word: {
-        equals: keyword,
-        mode: 'insensitive',
+      OR: [
+        {
+          word: {
+            equals: text,
+            mode: 'insensitive',
+          },
+        },
+        {
+          word: {
+            in: text.toLowerCase().split(' '),
+            mode: 'insensitive',
+          },
+        },
+        {
+          word: {
+            contains: text,
+            mode: 'insensitive',
+          },
+        }
+      ],
+    },
+    include: {
+      Automation: {
+        select: {
+          id: true,
+          active: true,
+        },
       },
     },
-  })
+  });
+
+  // Return the first matching keyword from an active automation
+  const activeKeyword = keywords.find(k => k.Automation?.active);
+  return activeKeyword || null;
 }
 
 export const getKeywordAutomation = async (

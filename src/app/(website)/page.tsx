@@ -1,168 +1,155 @@
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { MessageSquare, ThumbsUp, ArrowRight } from 'lucide-react'
-import Image from "next/image"
-import { Input } from "@/components/ui/input"
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { CheckCircle, MenuIcon } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
+  const plans = [
+    {
+      name: 'Free Plan',
+      description: 'Perfect for getting started',
+      price: '$0',
+      features: [
+        'Boost engagement with target responses',
+        'Automate comment replies to enhance audience interaction',
+        'Turn followers into customers with targeted messaging',
+      ],
+      cta: 'Get Started',
+    },
+    {
+      name: 'Smart AI Plan',
+      description: 'Advanced features for power users',
+      price: '$99',
+      features: [
+        'All features from Free Plan',
+        'AI-powered response generation',
+        'Advanced analytics and insights',
+        'Priority customer support',
+        'Custom branding options',
+      ],
+      cta: 'Upgrade Now',
+    },
+  ]
   return (
-   <main>
-      <header className="bg-gray-900 text-white py-6">
-      <div className="container mx-auto px-4">
-        <nav className="flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">
-            Logo
-          </Link>
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
-              Features
-            </Link>
-            <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
-              Pricing
-            </Link>
-            <Link href="#resources" className="text-gray-300 hover:text-white transition-colors">
-              Resources
-            </Link>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
-              <Link href="/dashboard">Login</Link>
-            </Button>
-          </div>
-        </nav>
-      </div>
-    </header>
+    <main>
+      <section className="relative bg-gradient-to-b from-slate-900 via-blue-900 to-bg">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+        <div className="relative">
+          <div className="container px-4 py-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center font-bold">
+                  li
+                </div>
+                <span className="text-xl font-semibold text-primary-foreground">
+                  Slide
+                </span>
+              </div>
+              <nav className="hidden space-x-6 text-sm text-blue-200 md:block">
+                <Link href="#features">Features</Link>
+                <Link href="#pricing">Pricing</Link>
+                <Link href="#about">About</Link>
+              </nav>
+              <Button className="bg-white text-primary">
+                <Link href="/dashboard">Login</Link>
+              </Button>
+            </div>
 
-    <section className="min-h-[80vh] bg-gradient-to-b from-gray-900 to-gray-50">
-        <div className="container mx-auto px-4">
-          {/* Hero */}
-          <div className="py-20">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-                Transform Your Instagram Engagement Effortlessly
+            <div className="mx-auto mt-16 max-w-3xl text-center">
+              <h1 className="text-4xl font-bold leading-tight tracking-tighter text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                Transform Your Instagram Engagement with Slide
               </h1>
-              <p className="text-xl text-gray-300 mb-8">
-                Clienttoo revolutionizes how you connect with your audience on Instagram. Our platform automates responses and interactions, turning every engagement into a valuable opportunity.
+
+              <p className="mt-6 text-lg text-blue-200">
+                Slide revolutionizes how you connect with your audience on
+                Instagram. Automate responses and boost engagement effortlessly,
+                turning interactions into valuable business opportunities.
               </p>
-              <div className="flex justify-center gap-4">
-                <Button size="lg">Get Started</Button>
-                <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-gray-900">
+
+              <div className="mt-8 flex justify-center gap-4">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Get Started
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-blue-400  hover:bg-blue-900/50"
+                >
                   Learn More
                 </Button>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-            <div>
-              <h2 className="text-3xl font-bold mb-6">
-                Instant DM Responses to Boost Engagement
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Respond instantly to keywords in DMs. Clienttoo empowers your business with automated responses to direct messages and comments. Experience seamless interactions that convert engagement into valuable opportunities.
-              </p>
-              <Button variant="outline" className="flex items-center">
-                Learn More <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-            <div className="relative aspect-video">
+            <div className="relative h-40 md:h-80 w-full  mt-10">
               <Image
-                src="/Telegram-bots-2-1.avif"
-                alt="Feature illustration"
+                src="/Ig-creators.png"
+                alt="Community member"
                 fill
-                className="object-cover rounded-lg"
+                className="object-cover"
               />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1 relative aspect-video">
-              <Image
-                src="/Telegram-bots-2-1.avif"
-                alt="Feature illustration"
-                fill
-                className="object-cover rounded-lg"
-              />
-            </div>
-            <div className="order-1 md:order-2">
-              <h2 className="text-3xl font-bold mb-6">
-                Automated Comment Triggers for Effortless Interaction
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Set up automations that react to comments. Our system allows you to like and reply to comments automatically, ensuring consistent engagement with your audience.
-              </p>
-              <Button variant="outline" className="flex items-center">
-                Learn More <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
             </div>
           </div>
         </div>
       </section>
-
-    <footer className="bg-gray-900 text-white py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
-              <li><Link href="/support">Support Center</Link></li>
-              <li><Link href="/blog">Blog Posts</Link></li>
-              <li><Link href="/faq">FAQs</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2">
-              <li><Link href="/webinars">Webinars</Link></li>
-              <li><Link href="/case-studies">Case Studies</Link></li>
-              <li><Link href="/ebooks">E-books</Link></li>
-              <li><Link href="/guides">Guides</Link></li>
-              <li><Link href="/templates">Templates</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4">Stay Connected</h3>
-            <ul className="space-y-2">
-              <li><Link href="#">Instagram</Link></li>
-              <li><Link href="#">Facebook</Link></li>
-              <li><Link href="#">Twitter</Link></li>
-              <li><Link href="#">LinkedIn</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4">Subscribe</h3>
-            <p className="text-sm mb-4">
-              Join our newsletter to stay updated on features and releases.
-            </p>
-            <div className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-gray-800 border-gray-700"
-              />
-              <Button className="w-full">Subscribe</Button>
-            </div>
-            <p className="text-xs mt-2 text-gray-400">
-              By subscribing, you agree to our Privacy Policy and consent to receive updates.
+      <section className="container w-full py-12 md:py-24 lg:py-32 bg-background">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+              Choose Your Plan
+            </h2>
+            <p className="max-w-[900px] text-muted-foreground">
+              Select the perfect plan to boost your Instagram engagement
             </p>
           </div>
-        </div>
-        <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-          <p>© 2024 Clienttoo. All rights reserved.</p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/terms">Terms of Service</Link>
-            <Link href="/cookies">Cookies Settings</Link>
+          <div className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2 md:gap-8">
+            {plans.map((plan, index) => (
+              <Card
+                key={index}
+                className="flex flex-col justify-between"
+              >
+                <CardHeader>
+                  <CardTitle>{plan.name}</CardTitle>
+                  <CardDescription>{plan.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  <div className="text-4xl font-bold">
+                    {plan.price}
+                    <span className="text-lg font-normal text-muted-foreground">
+                      /month
+                    </span>
+                  </div>
+                  <ul className="space-y-2">
+                    {plan.features.map((feature, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center"
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4 text-primary" />
+                        <span className="text-sm text-muted-foreground">
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full">{plan.cta}</Button>
+                </CardFooter>
+              </Card>
+            ))}
           </div>
         </div>
-      </div>
-    </footer>
-   </main>
-  );
+      </section>
+    </main>
+  )
 }
-

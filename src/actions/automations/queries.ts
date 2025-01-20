@@ -96,30 +96,35 @@ export const addListener = async (
 }
 
 export const addTrigger = async (automationId: string, trigger: string[]) => {
-  if (trigger.length === 2) {
+  try {
+    if (trigger.length === 2) {
+      return await client.automation.update({
+        where: { id: automationId },
+        data: {
+          trigger: {
+            createMany: {
+              data: [{ type: trigger[0] }, { type: trigger[1] }],
+            },
+          },
+        },
+      })
+    }
     return await client.automation.update({
-      where: { id: automationId },
+      where: {
+        id: automationId,
+      },
       data: {
         trigger: {
-          createMany: {
-            data: [{ type: trigger[0] }, { type: trigger[1] }],
+          create: {
+            type: trigger[0],
           },
         },
       },
     })
+  } catch (error) {
+    console.error('Error adding trigger:', error)
+    throw error
   }
-  return await client.automation.update({
-    where: {
-      id: automationId,
-    },
-    data: {
-      trigger: {
-        create: {
-          type: trigger[0],
-        },
-      },
-    },
-  })
 }
 
 export const addKeyWord = async (automationId: string, keyword: string) => {

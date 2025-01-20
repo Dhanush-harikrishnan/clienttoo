@@ -28,26 +28,38 @@ export const matchKeyword = async (text: string) => {
 }
 
 export const getKeywordAutomation = async (automationId: string, dm: boolean) => {
-  return await client.automation.findUnique({
-    where: { id: automationId },
-    include: {
-      dms: dm,
-      trigger: {
-        where: { type: dm ? 'DM' : 'COMMENT' },
-      },
-      listener: true,
-      User: {
-        select: {
-          subscription: {
-            select: { plan: true },
-          },
-          integrations: {
-            select: { token: true },
+  try {
+    const automation = await client.automation.findUnique({
+      where: { id: automationId },
+      include: {
+        dms: dm,
+        trigger: {
+          where: { type: dm ? 'DM' : 'COMMENT' },
+        },
+        listener: true,
+        User: {
+          select: {
+            subscription: {
+              select: { plan: true },
+            },
+            integrations: {
+              select: { token: true },
+            },
           },
         },
       },
-    },
-  });
+    });
+
+    if (!automation?.trigger?.length) {
+      console.log('No triggers found for automation:', automationId);
+      return null;
+    }
+
+    return automation;
+  } catch (error) {
+    console.error('Error getting keyword automation:', error);
+    throw error;
+  }
 }
 
 export const trackResponses = async (automationId: string, type: 'COMMENT' | 'DM') => {

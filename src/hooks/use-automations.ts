@@ -94,11 +94,11 @@ export const useListener = (id: string) => {
 
 export const useTriggers = (id: string) => {
   const types = useAppSelector((state) => state.AutmationReducer.trigger?.types)
-
   const dispatch: AppDispatch = useDispatch()
 
-  const onSetTrigger = (type: 'COMMENT' | 'DM') =>
+  const onSetTrigger = (type: 'COMMENT' | 'DM') => {
     dispatch(TRIGGER({ trigger: { type } }))
+  }
 
   const { isPending, mutate } = useMutationData(
     ['add-trigger'],
@@ -106,7 +106,13 @@ export const useTriggers = (id: string) => {
     'automation-info'
   )
 
-  const onSaveTrigger = () => mutate({ types })
+  const onSaveTrigger = async () => {
+    if (!types?.length) {
+      return
+    }
+    await mutate({ types })
+  }
+
   return { types, onSetTrigger, onSaveTrigger, isPending }
 }
 

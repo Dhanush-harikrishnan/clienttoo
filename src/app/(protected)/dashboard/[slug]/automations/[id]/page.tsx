@@ -32,9 +32,9 @@ const Page = async ({ params }: Props) => {
   const automationInfo = await getAutomationInfo(params.id)
   
   // Check what step of the automation we're at
-  const hasTrigger = automationInfo?.data?.trigger?.length > 0
-  const hasListener = automationInfo?.data?.listener !== null
-  const hasPosts = automationInfo?.data?.posts?.length > 0
+  const hasTrigger = (automationInfo?.data?.trigger?.length ?? 0) > 0
+  const hasListener = automationInfo?.data?.listener !== null && automationInfo?.data?.listener !== undefined
+  const hasPosts = (automationInfo?.data?.posts?.length ?? 0) > 0
 
   return (
     <HydrationBoundary state={dehydrate(query)}>

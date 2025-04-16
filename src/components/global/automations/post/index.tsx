@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import Loader from '../../loader'
 import SuccessIndicator from '../success-indicator'
+import { Spinner } from '../../loader/spinner'
 
 type Props = {
   id: string
@@ -90,7 +91,7 @@ const PostButton = ({ id }: Props) => {
                 )}
               >
                 {isPending ? (
-                  <Loader />
+                  <Spinner />
                 ) : (
                   <>
                     <span>{posts.length === 0 ? 'Select Posts to Monitor' : 'Attach Selected Posts'}</span>

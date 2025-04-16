@@ -77,7 +77,6 @@ export async function POST(req: NextRequest) {
             const prompt = automation.listener.prompt.replace('[GEMINI_AI_MODE]', '').trim();
             try {
               const smart_ai_message = await gemini.chat.completions.create({
-                model: "gemini-2.0-flash",
                 messages: [
                   {
                     role: 'user',
@@ -210,7 +209,6 @@ export async function POST(req: NextRequest) {
               const prompt = automation.listener.prompt.replace('[GEMINI_AI_MODE]', '').trim();
               try {
                 const smart_ai_message = await gemini.chat.completions.create({
-                  model: "gemini-2.0-flash",
                   messages: [
                     {
                       role: 'user',
@@ -296,7 +294,6 @@ export async function POST(req: NextRequest) {
           const prompt = automation.listener.prompt.replace('[GEMINI_AI_MODE]', '').trim();
           try {
             const smart_ai_message = await gemini.chat.completions.create({
-              model: "gemini-2.0-flash",
               messages: [
                 {
                   role: 'user',

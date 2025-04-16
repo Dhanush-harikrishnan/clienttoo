@@ -303,9 +303,11 @@ export async function POST(req: NextRequest) {
               messages: [
                 {
                   role: 'user',
-                  content: `${prompt}: Answer the message and keep it under 3 sentences ${customer_history.history
-                    .map((i) => `${i.senderId === 'SYSTEM' ? 'Bot:' : 'User:'} ${i.message}`)
-                    .join(' ')}`,
+                  content: `${prompt}: Answer the message and keep it under 3 sentences ${
+                    customer_history.history
+                      .map((i: any) => `${i.senderId === 'SYSTEM' ? 'Bot:' : 'User:'} ${i.message}`)
+                      .join(' ')
+                  }`,
                 },
               ],
             });

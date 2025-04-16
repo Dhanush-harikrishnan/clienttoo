@@ -80,7 +80,7 @@ const PostButton = ({ id }: Props) => {
               </div>
               
               <Button
-                onClick={() => mutate()}
+                onClick={() => mutate(undefined)}
                 disabled={posts.length === 0 || isPending}
                 className={cn(
                   'mt-4 transition-all duration-200 flex items-center justify-center gap-2',

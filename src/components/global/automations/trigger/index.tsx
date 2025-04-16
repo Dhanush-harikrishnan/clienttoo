@@ -95,13 +95,13 @@ const Trigger = ({ id }: Props) => {
             disabled={types?.length === 0}
             className={cn(
               "w-full transition-all duration-200 mt-4 flex items-center justify-center gap-2",
-              types?.length > 0 
+              (types || []).length > 0 
                 ? "bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium" 
                 : "bg-slate-700 text-slate-300"
             )}
           >
             {isPending ? (
-              <Loader />
+              <Loader state={true}><span>Loading...</span></Loader>
             ) : (
               <>
                 <span>{types?.length === 0 ? "Select a Trigger Type" : "Create Trigger"}</span>

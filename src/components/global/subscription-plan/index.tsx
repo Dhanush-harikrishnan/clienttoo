@@ -1,4 +1,4 @@
-import { useQueryUser } from '@/react-query/user'
+import { useQueryUser } from '@/hooks/user-queries'
 import React from 'react'
 
 type Props = {

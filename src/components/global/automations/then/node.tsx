@@ -12,7 +12,7 @@ type Props = {
 const ThenNode = ({ id }: Props) => {
   const { data } = useQueryAutomation(id)
   // Check for both COMMENT and DM triggers
-  const hasTriggers = data?.data?.trigger && data.data.trigger.length > 0
+  const hasTriggers = data?.data?.trigger && Array.isArray(data.data.trigger) && data.data.trigger.length > 0
 
   return !data?.data?.listener ? (
     <></>
@@ -49,7 +49,7 @@ const ThenNode = ({ id }: Props) => {
       </div>
       
       {/* Show post button if there are no posts yet but there are triggers */}
-      {data.data.posts.length === 0 && hasTriggers && (
+      {data.data.posts && Array.isArray(data.data.posts) && data.data.posts.length === 0 && hasTriggers && (
         <div className="mt-4">
           <PostButton id={id} />
         </div>

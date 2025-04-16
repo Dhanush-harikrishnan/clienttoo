@@ -14,8 +14,8 @@ const PostNode = ({ id }: Props) => {
   const { data } = useQueryAutomation(id)
   
   const hasPostsAndTriggers = 
-    data?.data?.posts?.length > 0 && 
-    data?.data?.trigger?.length > 0;
+    data?.data?.posts && Array.isArray(data.data.posts) && data.data.posts.length > 0 && 
+    data?.data?.trigger && Array.isArray(data.data.trigger) && data.data.trigger.length > 0;
 
   if (!hasPostsAndTriggers) {
     return null;
@@ -40,7 +40,7 @@ const PostNode = ({ id }: Props) => {
           Your automation will respond to interactions on these posts:
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {data.data.posts.map((post) => (
+          {data?.data?.posts && Array.isArray(data.data.posts) && data.data.posts.map((post) => (
             <div
               key={post.id}
               className="relative aspect-square rounded-lg overflow-hidden border border-slate-700 group"

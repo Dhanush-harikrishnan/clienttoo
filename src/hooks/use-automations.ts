@@ -9,12 +9,15 @@ import {
   saveTrigger,
   updateAutomationName,
 } from '@/actions/automations'
+
+import { useQueryClient } from '@tanstack/react-query'
 import { useMutationData } from './use-mutation-data'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import useZodForm from './use-zod-form'
 import { AppDispatch, useAppSelector } from '@/redux/store'
 import { useDispatch } from 'react-redux'
+
 import { TRIGGER } from '@/redux/slices/automation'
 
 export const useCreateAutomation = (id?: string) => {
@@ -73,6 +76,14 @@ export const useListener = (id: string) => {
   const [listener, setListener] = useState<'MESSAGE' | 'GEMINI' | null>(null)
   const [success, setSuccess] = useState(false);
 
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (success) {
+      queryClient.invalidateQueries({ queryKey: ['automation-info'] })
+    }
+  }, [success, queryClient])
+
   // Debug listener changes
   useEffect(() => {
     console.log("Listener type selected:", listener);
@@ -110,6 +121,14 @@ export const useListener = (id: string) => {
 export const useTriggers = (id: string) => {
   const types = useAppSelector((state) => state.AutmationReducer.trigger?.types)
   const [success, setSuccess] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (success) {
+      queryClient.invalidateQueries({ queryKey: ['automation-info'] })
+    }
+  }, [success, queryClient])
   const dispatch: AppDispatch = useDispatch()
 
   const onSetTrigger = (type: 'COMMENT' | 'DM') =>
@@ -139,10 +158,12 @@ export const useKeywords = (id: string) => {
 
   const { mutate, isPending } = useMutationData(
     ['add-keyword'],
-    (data: { keyword: string }) => {
+    async (data: { keyword: string }) => {
       // Ensure keyword is not empty before saving
-      if (data.keyword.trim().length === 0) return null;
-      return saveKeyword(id, data.keyword.trim());
+      if (data.keyword.trim().length === 0) {
+        return { status: 400, data: 'Keyword cannot be empty' };
+      }
+      return await saveKeyword(id, data.keyword.trim());
     },
     'automation-info',
     () => setKeyword('')
@@ -193,6 +214,14 @@ export const useAutomationPosts = (id: string) => {
     }[]
   >([])
   const [success, setSuccess] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (success) {
+      queryClient.invalidateQueries({ queryKey: ['automation-info'] })
+    }
+  }, [success, queryClient])
 
   const onSelectPost = (post: {
     postid: string

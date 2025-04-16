@@ -96,7 +96,7 @@ const ThenAction = ({ id }: Props) => {
                 disabled={isPending}
                 className="flex items-center gap-2"
               >
-                {isPending ? <Loader /> : (
+                {isPending ? <Loader state={true}><span>Loading...</span></Loader> : (
                   <>
                     <span>Save</span>
                     {success && <CheckCircle size={16} className="text-green-400" />}

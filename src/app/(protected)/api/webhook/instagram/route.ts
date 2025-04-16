@@ -124,9 +124,12 @@ export async function POST(req: NextRequest) {
               }
             } catch (error) {
               console.error('Error in Gemini API call:', error);
-              const errorMessage = error.response?.data?.error?.message || 
-                                  (error.message || 'Unknown error');
-              const errorCode = error.response?.status || 500;
+              const errorMessage = typeof error === 'object' && error !== null 
+                ? (error as any).response?.data?.error?.message || (error as any).message || 'Unknown error' 
+                : 'Unknown error';
+              const errorCode = typeof error === 'object' && error !== null 
+                ? (error as any).response?.status || 500
+                : 500;
               
               console.error(`Gemini API Error (${errorCode}): ${errorMessage}`);
               
@@ -257,9 +260,12 @@ export async function POST(req: NextRequest) {
                 }
               } catch (error) {
                 console.error('Error in Gemini API call:', error);
-                const errorMessage = error.response?.data?.error?.message || 
-                                    (error.message || 'Unknown error');
-                const errorCode = error.response?.status || 500;
+                const errorMessage = typeof error === 'object' && error !== null 
+                  ? (error as any).response?.data?.error?.message || (error as any).message || 'Unknown error' 
+                  : 'Unknown error';
+                const errorCode = typeof error === 'object' && error !== null 
+                  ? (error as any).response?.status || 500
+                  : 500;
                 
                 console.error(`Gemini API Error (${errorCode}): ${errorMessage}`);
                 
@@ -340,9 +346,12 @@ export async function POST(req: NextRequest) {
             }
           } catch (error) {
             console.error('Error in Gemini API call:', error);
-            const errorMessage = error.response?.data?.error?.message || 
-                                (error.message || 'Unknown error');
-            const errorCode = error.response?.status || 500;
+            const errorMessage = typeof error === 'object' && error !== null 
+              ? (error as any).response?.data?.error?.message || (error as any).message || 'Unknown error' 
+              : 'Unknown error';
+            const errorCode = typeof error === 'object' && error !== null 
+              ? (error as any).response?.status || 500
+              : 500;
             
             console.error(`Gemini API Error (${errorCode}): ${errorMessage}`);
             

@@ -28,13 +28,13 @@ const ActiveTrigger = ({ keywords, type }: Props) => {
         <div>
           <h3 className="text-lg font-medium text-gray-100">
             {type === 'COMMENT'
-              ? 'Comment Trigger'
-              : 'Direct Message Trigger'}
+              ? 'User comments on my post'
+              : 'User sends me a dm with a keyword'}
           </h3>
           <p className="text-sm text-gray-400">
             {type === 'COMMENT'
-              ? 'Responds when users comment on your selected posts'
-              : 'Responds when users send you direct messages'}
+              ? 'Automatically responds when users comment on your selected posts with specified keywords'
+              : 'Automatically responds when users send you direct messages containing specified keywords'}
           </p>
         </div>
       </div>

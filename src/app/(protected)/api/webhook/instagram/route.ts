@@ -21,12 +21,14 @@ export async function POST(req: NextRequest) {
   const webhook_payload = await req.json()
   let matcher
   try {
+    // Handle Direct Messages (DM Trigger)
     if (webhook_payload.entry[0].messaging) {
       matcher = await matchKeyword(
         webhook_payload.entry[0].messaging[0].message.text
       )
     }
 
+    // Handle Comments (COMMENT Trigger)
     if (webhook_payload.entry[0].changes) {
       matcher = await matchKeyword(
         webhook_payload.entry[0].changes[0].value.text
@@ -34,16 +36,18 @@ export async function POST(req: NextRequest) {
     }
 
     if (matcher && matcher.automationId) {
-      console.log('Matched')
-      // We have a keyword matcher
-
+      console.log('Keyword matched for automation:', matcher.automationId)
+      
+      // Handle DM Trigger: User sends me a dm with a keyword
       if (webhook_payload.entry[0].messaging) {
         const automation = await getKeywordAutomation(
           matcher.automationId,
-          true
+          true // This is for DM trigger
         )
 
         if (automation && automation.trigger) {
+          console.log('Processing DM trigger automation')
+          
           if (
             automation.listener &&
             automation.listener.listener === 'MESSAGE' &&
@@ -61,7 +65,7 @@ export async function POST(req: NextRequest) {
               if (tracked) {
                 return NextResponse.json(
                   {
-                    message: 'Message sent',
+                    message: 'DM sent successfully',
                   },
                   { status: 200 }
                 )
@@ -146,40 +150,35 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      // Handle COMMENT Trigger: User comments on my post
       if (
         webhook_payload.entry[0].changes &&
         webhook_payload.entry[0].changes[0].field === 'comments'
       ) {
         const automation = await getKeywordAutomation(
           matcher.automationId,
-          false
+          false // This is for COMMENT trigger
         )
 
-        console.log('geting the automations')
+        console.log('Processing COMMENT trigger automation')
 
         const automations_post = await getKeywordPost(
           webhook_payload.entry[0].changes[0].value.media.id,
           automation?.id!
         )
 
-        console.log('found keyword ', automations_post)
+        console.log('Found keyword in selected post:', automations_post)
 
         if (automation && automations_post && automation.trigger) {
-          console.log('first if')
+          console.log('Comment trigger validation passed')
+          
           if (automation.listener) {
-            console.log('first if')
             if (
               automation.listener.listener === 'MESSAGE' && 
               !automation.listener.prompt.includes('[GEMINI_AI_MODE]')) {
               console.log(
-                'SENDING DM, WEB HOOK PAYLOAD',
-                webhook_payload,
-                'changes',
-                webhook_payload.entry[0].changes[0].value.from
-              )
-
-              console.log(
-                'COMMENT VERSION:',
+                'Sending DM for comment trigger',
+                'Comment from:',
                 webhook_payload.entry[0].changes[0].value.from.id
               )
 
@@ -190,14 +189,14 @@ export async function POST(req: NextRequest) {
                 automation.User?.integrations[0].token!
               )
 
-              console.log('DM SENT', direct_message.data)
+              console.log('DM sent for comment trigger:', direct_message.data)
               if (direct_message.status === 200) {
                 const tracked = await trackResponses(automation.id, 'COMMENT')
 
                 if (tracked) {
                   return NextResponse.json(
                     {
-                      message: 'Message sent',
+                      message: 'Comment trigger - DM sent successfully',
                     },
                     { status: 200 }
                   )

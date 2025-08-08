@@ -62,8 +62,7 @@ const Trigger = ({ id }: Props) => {
           <div className="bg-blue-500/10 p-3 rounded-lg text-sm flex items-start gap-x-2">
             <AlertCircle className="text-blue-400 flex-shrink-0 mt-0.5" size={16} />
             <p className="text-gray-300">
-              Select what should trigger your automation. You can monitor comments on your posts 
-              or direct messages containing specific keywords.
+              Choose what will trigger your automation: <strong>Comments</strong> - when users comment on your posts with specific keywords, or <strong>DMs</strong> - when users send you direct messages containing specific keywords.
             </p>
           </div>
           

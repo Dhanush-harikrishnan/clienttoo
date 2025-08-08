@@ -15,16 +15,17 @@ export const getKeywordAutomation = async (
   automationId: string,
   dm: boolean
 ) => {
+  const triggerType = dm ? 'DM' : 'COMMENT';
+  
   return await client.automation.findUnique({
     where: {
       id: automationId,
     },
-
     include: {
       dms: dm,
       trigger: {
         where: {
-          type: dm ? 'DM' : 'COMMENT',
+          type: triggerType,
         },
       },
       listener: true,
@@ -33,6 +34,8 @@ export const getKeywordAutomation = async (
           integrations: true,
         },
       },
+      keywords: true,
+      posts: true,
     },
   })
 }

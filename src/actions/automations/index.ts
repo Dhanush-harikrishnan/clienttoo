@@ -79,18 +79,25 @@ export const saveListener = async (
   await onCurrentUser()
   try {
     console.log("Saving listener:", { autmationId, listener, prompt, reply });
+    
+    if (!prompt || prompt.trim().length === 0) {
+      return { status: 400, data: 'Please provide a response prompt' }
+    }
+    
     // Ensure reply is a string even if undefined
     const safeReply = reply || "";
     const create = await addListener(autmationId, listener, prompt, safeReply)
-    if (create) return { status: 200, data: 'Listener created' }
-    return { status: 404, data: 'Cant save listener' }
+    if (create) {
+      return { status: 200, data: 'Response settings saved successfully' }
+    }
+    return { status: 404, data: 'Automation not found' }
   } catch (error) {
     console.error("Error saving listener:", error);
     // More detailed error message for debugging
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return { 
       status: 500, 
-      data: 'Oops! something went wrong', 
+      data: 'Failed to save response settings. Please try again.', 
       error: errorMessage
     }
   }
@@ -99,11 +106,18 @@ export const saveListener = async (
 export const saveTrigger = async (automationId: string, trigger: string[]) => {
   await onCurrentUser()
   try {
+    if (!trigger || trigger.length === 0) {
+      return { status: 400, data: 'Please select at least one trigger type' }
+    }
+    
     const create = await addTrigger(automationId, trigger)
-    if (create) return { status: 200, data: 'Trigger saved' }
-    return { status: 404, data: 'Cannot save trigger' }
+    if (create) {
+      return { status: 200, data: 'Trigger saved successfully' }
+    }
+    return { status: 404, data: 'Automation not found' }
   } catch (error) {
-    return { status: 500, data: 'Oops! something went wrong' }
+    console.error('Error saving trigger:', error)
+    return { status: 500, data: 'Failed to save trigger. Please try again.' }
   }
 }
 
@@ -168,13 +182,18 @@ export const savePosts = async (
 ) => {
   await onCurrentUser()
   try {
+    if (!posts || posts.length === 0) {
+      return { status: 400, data: 'Please select at least one post' }
+    }
+    
     const create = await addPost(autmationId, posts)
-
-    if (create) return { status: 200, data: 'Posts attached' }
-
+    if (create) {
+      return { status: 200, data: 'Posts attached successfully' }
+    }
     return { status: 404, data: 'Automation not found' }
   } catch (error) {
-    return { status: 500, data: 'Oops! something went wrong' }
+    console.error('Error saving posts:', error)
+    return { status: 500, data: 'Failed to attach posts. Please try again.' }
   }
 }
 

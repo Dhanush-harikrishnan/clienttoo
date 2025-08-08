@@ -129,30 +129,50 @@ export const addListener = async (
 }
 
 export const addTrigger = async (automationId: string, trigger: string[]) => {
-  if (trigger.length === 2) {
-    return await client.automation.update({
+  try {
+    // Verify automation exists first
+    const automation = await client.automation.findUnique({
       where: { id: automationId },
+      select: { id: true }
+    })
+    
+    if (!automation) {
+      throw new Error('Automation not found')
+    }
+
+    // Delete existing triggers first to prevent duplicates
+    await client.trigger.deleteMany({
+      where: { automationId }
+    })
+
+    if (trigger.length === 2) {
+      return await client.automation.update({
+        where: { id: automationId },
+        data: {
+          trigger: {
+            createMany: {
+              data: [{ type: trigger[0] }, { type: trigger[1] }],
+            },
+          },
+        },
+      })
+    }
+    return await client.automation.update({
+      where: {
+        id: automationId,
+      },
       data: {
         trigger: {
-          createMany: {
-            data: [{ type: trigger[0] }, { type: trigger[1] }],
+          create: {
+            type: trigger[0],
           },
         },
       },
     })
+  } catch (error) {
+    console.error("Database error in addTrigger:", error);
+    throw error;
   }
-  return await client.automation.update({
-    where: {
-      id: automationId,
-    },
-    data: {
-      trigger: {
-        create: {
-          type: trigger[0],
-        },
-      },
-    },
-  })
 }
 
 export const addKeyWord = async (automationId: string, keyword: string) => {
@@ -185,18 +205,38 @@ export const addPost = async (
     mediaType: 'IMAGE' | 'VIDEO' | 'CAROSEL_ALBUM'
   }[]
 ) => {
-  return await client.automation.update({
-    where: {
-      id: autmationId,
-    },
-    data: {
-      posts: {
-        createMany: {
-          data: posts,
+  try {
+    // Verify automation exists first
+    const automation = await client.automation.findUnique({
+      where: { id: autmationId },
+      select: { id: true }
+    })
+    
+    if (!automation) {
+      throw new Error('Automation not found')
+    }
+
+    // Delete existing posts first to prevent duplicates
+    await client.post.deleteMany({
+      where: { automationId: autmationId }
+    })
+
+    return await client.automation.update({
+      where: {
+        id: autmationId,
+      },
+      data: {
+        posts: {
+          createMany: {
+            data: posts,
+          },
         },
       },
-    },
-  })
+    })
+  } catch (error) {
+    console.error("Database error in addPost:", error);
+    throw error;
+  }
 }
 
 export const deleteAutomationQuery = async (id: string) => {

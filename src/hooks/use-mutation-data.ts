@@ -18,13 +18,23 @@ export const useMutationData = (
     mutationKey,
     mutationFn,
     onSuccess: (data) => {
-      if (onSuccess) onSuccess()
+      if (data?.status === 200 && onSuccess) {
+        onSuccess()
+      }
       return toast(data?.status === 200 ? 'Success' : 'Error', {
-        description: data.data,
+        description: data?.data || 'Operation completed',
+      })
+    },
+    onError: (error) => {
+      console.error('Mutation error:', error)
+      return toast('Error', {
+        description: 'Something went wrong. Please try again.',
       })
     },
     onSettled: async () => {
-      await client.invalidateQueries({ queryKey: [queryKey] })
+      if (queryKey) {
+        await client.invalidateQueries({ queryKey: [queryKey] })
+      }
     },
   })
 

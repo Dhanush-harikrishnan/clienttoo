@@ -129,10 +129,12 @@ export const useTriggers = (id: string) => {
       queryClient.invalidateQueries({ queryKey: ['automation-info'] })
     }
   }, [success, queryClient])
+  
   const dispatch: AppDispatch = useDispatch()
 
-  const onSetTrigger = (type: 'COMMENT' | 'DM') =>
+  const onSetTrigger = (type: 'COMMENT' | 'DM') => {
     dispatch(TRIGGER({ trigger: { type } }))
+  }
 
   const { isPending, mutate } = useMutationData(
     ['add-trigger'],
@@ -144,7 +146,12 @@ export const useTriggers = (id: string) => {
     }
   )
 
-  const onSaveTrigger = () => mutate({ types })
+  const onSaveTrigger = () => {
+    if (types && types.length > 0) {
+      mutate({ types })
+    }
+  }
+  
   return { types, onSetTrigger, onSaveTrigger, isPending, success }
 }
 
@@ -248,7 +255,14 @@ export const useAutomationPosts = (id: string) => {
       setTimeout(() => setSuccess(false), 3000);
     }
   )
-  return { posts, onSelectPost, mutate, isPending, success }
+  
+  const onAttachPosts = () => {
+    if (posts && posts.length > 0) {
+      mutate(undefined)
+    }
+  }
+  
+  return { posts, onSelectPost, mutate: onAttachPosts, isPending, success }
 }
 
 export const useDeleteAutomation = (id: string) => {

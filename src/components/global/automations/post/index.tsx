@@ -81,13 +81,13 @@ const PostButton = ({ id }: Props) => {
               </div>
               
               <Button
-                onClick={() => mutate(undefined)}
+                onClick={() => mutate()}
                 disabled={posts.length === 0 || isPending}
                 className={cn(
                   'mt-4 transition-all duration-200 flex items-center justify-center gap-2',
-                  posts.length > 0
+                  posts.length > 0 && !isPending
                     ? 'bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium'
-                    : 'bg-slate-700 text-slate-300'
+                    : 'bg-slate-700 text-slate-300 cursor-not-allowed'
                 )}
               >
                 {isPending ? (

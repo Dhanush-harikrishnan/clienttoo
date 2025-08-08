@@ -29,11 +29,14 @@ export const getMonth = (month: number) => {
 }
 
 export const duplicateValidation = (arr: string[], el: string) => {
-  if (!arr.find((t) => t === el)) {
-    arr.push(el)
-    return arr
+  if (!arr || !Array.isArray(arr)) {
+    return [el]
+  }
+  
+  const existingIndex = arr.findIndex((t) => t === el)
+  if (existingIndex === -1) {
+    return [...arr, el]
   } else {
-    arr = arr.filter((t) => t !== el)
-    return arr
+    return arr.filter((t) => t !== el)
   }
 }

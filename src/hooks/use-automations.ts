@@ -40,7 +40,7 @@ export const useEditAutomation = (automationId: string) => {
     ['update-automation'],
     (data: { name: string }) =>
       updateAutomationName(automationId, { name: data.name }),
-    'automation-info',
+    ['automation-info', 'user-automations'],
     disableEdit
   )
 
@@ -101,7 +101,7 @@ export const useListener = (id: string) => {
       console.log("Mutation data:", data, "Listener type:", listener);
       return saveListener(id, listener || 'MESSAGE', data.prompt, data.reply || "");
     },
-    'automation-info',
+    ['automation-info', 'user-automations'],
     () => {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -147,7 +147,7 @@ export const useTriggers = (id: string) => {
       }
       return await saveTrigger(id, data.types);
     },
-    'automation-info',
+    ['automation-info', 'user-automations'],
     () => {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -184,7 +184,7 @@ export const useKeywords = (id: string) => {
       }
       return await saveKeyword(id, trimmedKeyword);
     },
-    'automation-info',
+    ['automation-info', 'user-automations'],
     () => {
       setKeyword('');
     }
@@ -212,7 +212,7 @@ export const useKeywords = (id: string) => {
   const { mutate: deleteMutation } = useMutationData(
     ['delete-keyword'],
     (data: { id: string }) => deleteKeyword(data.id),
-    'automation-info'
+    ['automation-info', 'user-automations']
   )
 
   return { 
@@ -262,7 +262,7 @@ export const useAutomationPosts = (id: string) => {
   const { mutate, isPending } = useMutationData(
     ['attach-posts'],
     () => savePosts(id, posts),
-    'automation-info',
+    ['automation-info', 'user-automations'],
     () => {
       setPosts([]);
       setSuccess(true);

@@ -37,17 +37,17 @@ model Integrations {
 }
 
 model Automation {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String    @default("Untitled")
-  createdAt DateTime  @default(now())
-  active    Boolean   @default(false)
-  trigger   Trigger[]
-  listener  Listener?
-  posts     Post[]
-  dms       Dms[]
-  User      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?   @db.Uuid
-  keywords  Keyword[]
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String       @default("Untitled")
+  createdAt   DateTime     @default(now())
+  active      Boolean      @default(false)
+  triggerType TRIGGERTYPE?
+  listener    Listener?
+  posts       Post[]
+  dms         Dms[]
+  User        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?      @db.Uuid
+  keywords    Keyword[]
 }
 
 model Dms {
@@ -81,13 +81,6 @@ model Listener {
   commentCount Int        @default(0)
 }
 
-model Trigger {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  type         String
-  Automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-}
-
 model Keyword {
   id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   word         String
@@ -110,4 +103,9 @@ enum MEDIATYPE {
 enum LISTENERS {
   GEMINI
   MESSAGE
+}
+
+enum TRIGGERTYPE {
+  COMMENT
+  DM
 }

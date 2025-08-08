@@ -6,12 +6,12 @@ import {
   addKeyWord,
   addListener,
   addPost,
-  addTrigger,
   createAutomation,
   deleteAutomationQuery,
   deleteKeywordQuery,
   findAutomation,
   getAutomations,
+  saveTrigger,
   updateAutomation,
 } from './queries'
 import { client } from '@/lib/prisma'
@@ -104,14 +104,13 @@ export const saveListener = async (
   }
 }
 
-export const saveTrigger = async (automationId: string, trigger: string[]) => {
+export const onSaveTrigger = async (
+  automationId: string,
+  trigger: 'DM' | 'COMMENT'
+) => {
   await onCurrentUser()
   try {
-    if (!trigger || trigger.length === 0) {
-      return { status: 400, data: 'Please select at least one trigger type' }
-    }
-    
-    const create = await addTrigger(automationId, trigger)
+    const create = await saveTrigger(automationId, trigger)
     if (create) {
       return { status: 200, data: 'Trigger saved successfully' }
     }

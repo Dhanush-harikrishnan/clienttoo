@@ -1,12 +1,11 @@
 import { z } from 'zod'
 import {
   createAutomations,
-  deleteAutomation,
   deleteKeyword,
+  onSaveTrigger,
   saveKeyword,
   saveListener,
   savePosts,
-  saveTrigger,
   updateAutomationName,
 } from '@/actions/automations'
 
@@ -15,10 +14,6 @@ import { useMutationData } from './use-mutation-data'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import useZodForm from './use-zod-form'
-import { AppDispatch, useAppSelector } from '@/redux/store'
-import { useDispatch } from 'react-redux'
-
-import { TRIGGER } from '@/redux/slices/automation'
 
 export const useCreateAutomation = (id?: string) => {
   const { isPending, mutate } = useMutationData(
@@ -119,48 +114,24 @@ export const useListener = (id: string) => {
 }
 
 export const useTriggers = (id: string) => {
-  const types = useAppSelector((state) => state.AutmationReducer.trigger?.types)
-  const [success, setSuccess] = useState(false);
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (success) {
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['automation-info'] })
-      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
-    }
-  }, [success, queryClient])
-  
-  const dispatch: AppDispatch = useDispatch()
-
-  const onSetTrigger = (type: 'COMMENT' | 'DM') => {
-    dispatch(TRIGGER({ trigger: { type } }))
-  }
-
+  const [type, setType] = useState<'COMMENT' | 'DM'>()
   const { isPending, mutate } = useMutationData(
     ['add-trigger'],
-    async (data: { types: string[] }) => {
-      // Validate types before saving
-      if (!data.types || data.types.length === 0) {
-        throw new Error('Please select at least one trigger type');
-      }
-      return await saveTrigger(id, data.types);
-    },
-    ['automation-info', 'user-automations'],
-    () => {
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    }
+    (data: { type: 'COMMENT' | 'DM' }) => onSaveTrigger(id, data.type),
+    ['automation-info', 'user-automations']
   )
 
-  const onSaveTrigger = () => {
-    if (types && types.length > 0) {
-      mutate({ types })
-    }
+  const onSetTrigger = (type: 'COMMENT' | 'DM') => {
+    setType(type)
   }
-  
-  return { types, onSetTrigger, onSaveTrigger, isPending, success }
+
+  useEffect(() => {
+    if (type) {
+      mutate({ type })
+    }
+  }, [type, mutate])
+
+  return { onSetTrigger, isPending, type }
 }
 
 export const useKeywords = (id: string) => {
@@ -280,14 +251,18 @@ export const useAutomationPosts = (id: string) => {
 }
 
 export const useDeleteAutomation = (id: string) => {
-  const router = useRouter();
-  
+  const router = useRouter()
   const { isPending, mutate } = useMutationData(
     ['delete-automation'],
-    () => deleteAutomation(id),
-    'user-automations',
-    () => router.push('/dashboard/instagram/automations')
+    () => onSaveTrigger(id, 'DM'),
+    ['user-automations'],
+    () => {
+      router.push('/dashboard')
+    }
   )
 
-  return { isPending, mutate }
+  return {
+    isPending,
+    mutate,
+  }
 }

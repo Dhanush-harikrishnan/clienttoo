@@ -30,15 +30,14 @@ const Page = async ({ params }: Props) => {
   const query = new QueryClient()
   await PrefetchUserAutomation(query, params.id)
   const automationInfo = await getAutomationInfo(params.id)
-  
-  // Check what step of the automation we're at with proper validation
-  const hasTrigger = (automationInfo?.data?.trigger?.length ?? 0) > 0
-  const hasListener = automationInfo?.data?.listener !== null && automationInfo?.data?.listener !== undefined
-  const hasPosts = (automationInfo?.data?.posts?.length ?? 0) > 0
-  const hasKeywords = (automationInfo?.data?.keywords?.length ?? 0) > 0
 
-  const isCommentTrigger = automationInfo?.data?.trigger?.some(t => t.type === 'COMMENT') ?? false;
-  const allStepsCompleted = hasTrigger && hasListener && (isCommentTrigger ? hasPosts : true);
+  const hasTrigger = automationInfo.data?.triggerType !== null
+  const hasListener = !!automationInfo.data?.listener
+  const hasPosts = (automationInfo.data?.posts?.length ?? 0) > 0
+
+  const isCommentTrigger = automationInfo.data?.triggerType === 'COMMENT'
+  const allStepsCompleted =
+    hasTrigger && hasListener && (isCommentTrigger ? hasPosts : true)
 
   return (
     <HydrationBoundary state={dehydrate(query)}>
@@ -80,14 +79,18 @@ const Page = async ({ params }: Props) => {
             <div>
               <h3 className="text-blue-300 font-medium mb-1">Complete your automation setup</h3>
               <p className="text-gray-300 text-sm">
-                {!hasTrigger ? "Start by setting up a trigger - what will activate your automation" : 
-                 !hasListener ? "Now define how your automation should respond" :
-                 isCommentTrigger && !hasPosts ? "Finally, select which posts should be monitored" : ""}
+                {!hasTrigger
+                  ? 'Start by setting up a trigger - what will activate your automation'
+                  : !hasListener
+                  ? 'Now define how your automation should respond'
+                  : isCommentTrigger && !hasPosts
+                  ? 'Finally, select which posts should be monitored'
+                  : ''}
               </p>
             </div>
           </div>
         )}
-        
+
         {/* Always show trigger section first */}
         <div className="w-full lg:w-10/12 xl:w-6/12 relative"> 
           <div className="p-5 rounded-xl flex flex-col bg-gradient-to-br from-slate-800 to-slate-900 gap-y-3 border border-slate-700/30 shadow-lg">
@@ -111,15 +114,18 @@ const Page = async ({ params }: Props) => {
             <ThenNode id={params.id} />
           </>
         )}
-        
+
         {/* Show posts section only when listener is completed and trigger is 'COMMENT' */}
         {hasTrigger && isCommentTrigger && (
           <>
             <div className="flex flex-col items-center gap-y-2">
-              <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />
+              <ArrowDownCircle
+                className="text-blue-400 animate-bounce"
+                size={24}
+              />
               <p className="text-gray-400 text-sm">For</p>
             </div>
-            
+
             {/* Posts node */}
             <PostNode id={params.id} />
           </>

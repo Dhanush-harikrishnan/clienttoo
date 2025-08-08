@@ -44,7 +44,6 @@ export const findAutomation = async (id: string) => {
     },
     include: {
       keywords: true,
-      trigger: true,
       posts: true,
       listener: true,
       User: {
@@ -128,55 +127,22 @@ export const addListener = async (
   }
 }
 
-export const addTrigger = async (automationId: string, trigger: string[]) => {
-  try {
-    // Verify automation exists first
-    const automation = await client.automation.findUnique({
-      where: { id: automationId },
-      select: { id: true }
-    })
-    
-    if (!automation) {
-      throw new Error('Automation not found')
-    }
-
-    // Delete existing triggers first to prevent duplicates
-    await client.trigger.deleteMany({
-      where: { automationId }
-    })
-
-    if (trigger.length === 2) {
-      return await client.automation.update({
-        where: { id: automationId },
-        data: {
-          trigger: {
-            createMany: {
-              data: [{ type: trigger[0] }, { type: trigger[1] }],
-            },
-          },
-        },
-      })
-    }
-    return await client.automation.update({
-      where: {
-        id: automationId,
-      },
-      data: {
-        trigger: {
-          create: {
-            type: trigger[0],
-          },
-        },
-      },
-    })
-  } catch (error) {
-    console.error("Database error in addTrigger:", error);
-    throw error;
-  }
+export const saveTrigger = async (
+  automationId: string,
+  trigger: 'DM' | 'COMMENT'
+) => {
+  return await client.automation.update({
+    where: {
+      id: automationId,
+    },
+    data: {
+      triggerType: trigger,
+    },
+  })
 }
 
 export const addKeyWord = async (automationId: string, keyword: string) => {
-  return client.automation.update({
+  return await client.automation.update({
     where: {
       id: automationId,
     },

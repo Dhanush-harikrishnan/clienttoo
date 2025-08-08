@@ -37,6 +37,9 @@ const Page = async ({ params }: Props) => {
   const hasPosts = (automationInfo?.data?.posts?.length ?? 0) > 0
   const hasKeywords = (automationInfo?.data?.keywords?.length ?? 0) > 0
 
+  const isCommentTrigger = automationInfo?.data?.trigger.some(t => t.type === 'COMMENT') ?? false;
+  const allStepsCompleted = hasTrigger && hasListener && (isCommentTrigger ? hasPosts : true);
+
   return (
     <HydrationBoundary state={dehydrate(query)}>
       <div className="flex flex-col items-center gap-y-8 py-6">
@@ -57,17 +60,21 @@ const Page = async ({ params }: Props) => {
             </div>
             <span className={`text-xs ${hasListener ? 'text-green-500' : hasTrigger ? 'text-blue-400' : 'text-slate-500'}`}>Response</span>
           </div>
-          <div className={`h-0.5 flex-1 mx-2 ${hasPosts ? 'bg-green-500' : 'bg-slate-700'}`}></div>
-          <div className="flex flex-col items-center">
-            <div className={`w-8 h-8 rounded-full ${hasPosts ? 'bg-green-500 text-white' : hasListener ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-700/50 text-slate-500'} flex items-center justify-center mb-1`}>
-              {hasPosts ? <CheckCircle size={16} /> : '3'}
-            </div>
-            <span className={`text-xs ${hasPosts ? 'text-green-500' : hasListener ? 'text-blue-400' : 'text-slate-500'}`}>Posts</span>
-          </div>
+          {isCommentTrigger && (
+            <>
+              <div className={`h-0.5 flex-1 mx-2 ${hasPosts ? 'bg-green-500' : 'bg-slate-700'}`}></div>
+              <div className="flex flex-col items-center">
+                <div className={`w-8 h-8 rounded-full ${hasPosts ? 'bg-green-500 text-white' : hasListener ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-700/50 text-slate-500'} flex items-center justify-center mb-1`}>
+                  {hasPosts ? <CheckCircle size={16} /> : '3'}
+                </div>
+                <span className={`text-xs ${hasPosts ? 'text-green-500' : hasListener ? 'text-blue-400' : 'text-slate-500'}`}>Posts</span>
+              </div>
+            </>
+          )}
         </div>
         
         {/* Automation setup guide */}
-        {(!hasTrigger || !hasListener || !hasPosts) && (
+        {!allStepsCompleted && (
           <div className="w-full lg:w-10/12 xl:w-6/12 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 mb-4 flex items-start gap-3">
             <InfoIcon className="text-blue-400 mt-1 flex-shrink-0" size={18} />
             <div>
@@ -75,7 +82,7 @@ const Page = async ({ params }: Props) => {
               <p className="text-gray-300 text-sm">
                 {!hasTrigger ? "Start by setting up a trigger - what will activate your automation" : 
                  !hasListener ? "Now define how your automation should respond" :
-                 !hasPosts ? "Finally, select which posts should be monitored" : ""}
+                 isCommentTrigger && !hasPosts ? "Finally, select which posts should be monitored" : ""}
               </p>
             </div>
           </div>
@@ -105,8 +112,8 @@ const Page = async ({ params }: Props) => {
           </>
         )}
         
-        {/* Show posts section only when listener is completed */}
-        {hasTrigger && hasListener && (
+        {/* Show posts section only when listener is completed and trigger is 'COMMENT' */}
+        {hasTrigger && hasListener && automationInfo?.data?.trigger.some(t => t.type === 'COMMENT') && (
           <>
             <div className="flex flex-col items-center gap-y-2">
               <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />

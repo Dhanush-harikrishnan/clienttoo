@@ -37,7 +37,7 @@ const Page = async ({ params }: Props) => {
   const hasPosts = (automationInfo?.data?.posts?.length ?? 0) > 0
   const hasKeywords = (automationInfo?.data?.keywords?.length ?? 0) > 0
 
-  const isCommentTrigger = automationInfo?.data?.trigger.some(t => t.type === 'COMMENT') ?? false;
+  const isCommentTrigger = automationInfo?.data?.trigger?.some(t => t.type === 'COMMENT') ?? false;
   const allStepsCompleted = hasTrigger && hasListener && (isCommentTrigger ? hasPosts : true);
 
   return (
@@ -113,7 +113,7 @@ const Page = async ({ params }: Props) => {
         )}
         
         {/* Show posts section only when listener is completed and trigger is 'COMMENT' */}
-        {hasTrigger && hasListener && automationInfo?.data?.trigger.some(t => t.type === 'COMMENT') && (
+        {hasTrigger && hasListener && automationInfo?.data?.trigger?.some(t => t.type === 'COMMENT') && (
           <>
             <div className="flex flex-col items-center gap-y-2">
               <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />

@@ -8,21 +8,6 @@ const nextConfig = {
       },
     ],
   },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/dashboard',
-        permanent: false,
-        has: [
-          {
-            type: 'cookie',
-            key: '__session',
-          },
-        ],
-      },
-    ]
-  },
 }
 
 export default nextConfig

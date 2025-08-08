@@ -18,21 +18,18 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth()
   const url = req.nextUrl.clone()
 
-  // Allow public routes
-  if (isPublicRoute(req)) {
-    return NextResponse.next()
+  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  if (userId && (url.pathname === '/sign-in' || url.pathname === '/sign-up')) {
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
   }
 
   // Protect private routes
-  if (isProtectedRoute(req)) {
-    if (!userId) {
-      url.pathname = '/sign-in'
-      return NextResponse.redirect(url)
-    }
-    return NextResponse.next()
+  if (isProtectedRoute(req) && !userId) {
+    url.pathname = '/sign-in'
+    return NextResponse.redirect(url)
   }
 
-  // Default behavior for other routes
   return NextResponse.next()
 })
 

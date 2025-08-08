@@ -14,6 +14,7 @@ import {
   getAutomations,
   updateAutomation,
 } from './queries'
+import { client } from '@/lib/prisma'
 
 export const createAutomations = async (id?: string) => {
   const user = await onCurrentUser()
@@ -124,13 +125,42 @@ export const saveTrigger = async (automationId: string, trigger: string[]) => {
 export const saveKeyword = async (automationId: string, keyword: string) => {
   await onCurrentUser()
   try {
-    const create = await addKeyWord(automationId, keyword)
+    if (!keyword || keyword.trim().length === 0) {
+      return { status: 400, data: 'Please provide a keyword' }
+    }
+    
+    const trimmedKeyword = keyword.trim();
+    if (trimmedKeyword.length > 50) {
+      return { status: 400, data: 'Keyword too long (max 50 characters)' }
+    }
+    
+    // Check if automation exists
+    const automation = await client.automation.findUnique({
+      where: { id: automationId },
+      include: { keywords: true }
+    });
+    
+    if (!automation) {
+      return { status: 404, data: 'Automation not found' }
+    }
+    
+    // Check for duplicate keywords
+    const existingKeyword = automation.keywords.find(
+      (k: any) => k.word.toLowerCase() === trimmedKeyword.toLowerCase()
+    );
+    
+    if (existingKeyword) {
+      return { status: 400, data: 'This keyword already exists' }
+    }
+
+    const create = await addKeyWord(automationId, trimmedKeyword)
 
     if (create) return { status: 200, data: 'Keyword added successfully' }
 
-    return { status: 404, data: 'Cannot add this keyword' }
+    return { status: 404, data: 'Failed to add keyword' }
   } catch (error) {
-    return { status: 500, data: 'Oops! something went wrong' }
+    console.error('Error saving keyword:', error)
+    return { status: 500, data: 'Failed to save keyword. Please try again.' }
   }
 }
 

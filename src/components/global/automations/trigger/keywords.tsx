@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const Keywords = ({ id }: Props) => {
-  const { onValueChange, keyword, onKeyPress, deleteMutation } = useKeywords(id)
+  const { onValueChange, keyword, onKeyPress, deleteMutation, onAddKeyword, isPending } = useKeywords(id)
   const { latestVariable } = useMutationDataState(['add-keyword'])
   const { data } = useQueryAutomation(id)
   const [isAdding, setIsAdding] = useState(false)
@@ -19,11 +19,7 @@ export const Keywords = ({ id }: Props) => {
   // Handle manual submission when the input loses focus
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (keyword.trim().length > 0) {
-      const enterEvent = {
-        key: 'Enter',
-        preventDefault: () => {}
-      } as React.KeyboardEvent<HTMLInputElement>;
-      onKeyPress(enterEvent);
+      onAddKeyword();
     }
     setIsAdding(false);
   }
@@ -32,10 +28,18 @@ export const Keywords = ({ id }: Props) => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     onKeyPress(e);
     if (e.key === 'Enter' && keyword.trim().length > 0) {
-      // If keyword was accepted, clear and keep focus
+      // Reset adding state after successful submission
       setTimeout(() => {
-        setIsAdding(true);
+        setIsAdding(false);
       }, 100);
+    }
+  }
+
+  // Handle Add button click
+  const handleAddClick = () => {
+    if (keyword.trim().length > 0) {
+      onAddKeyword();
+      setIsAdding(false);
     }
   }
 
@@ -66,7 +70,7 @@ export const Keywords = ({ id }: Props) => {
         {data?.data?.keywords &&
           data?.data?.keywords.length > 0 &&
           data?.data?.keywords.map(
-            (word) =>
+            (word: any) =>
               word.id !== latestVariable?.variables?.id && (
                 <div
                   className="bg-blue-500/10 flex items-center gap-x-2 capitalize text-blue-300 py-1.5 px-3 rounded-full border border-blue-500/20 group hover:bg-blue-500/20 transition-colors"
@@ -102,21 +106,16 @@ export const Keywords = ({ id }: Props) => {
                 onKeyUp={handleKeyPress}
                 onBlur={handleBlur}
                 autoFocus
+                disabled={isPending}
               />
             </div>
             <Button 
               size="sm"
-              disabled={!keyword.trim()}
-              onClick={() => {
-                const enterEvent = {
-                  key: 'Enter',
-                  preventDefault: () => {}
-                } as React.KeyboardEvent<HTMLInputElement>;
-                onKeyPress(enterEvent);
-              }}
-              className="bg-blue-500 hover:bg-blue-600"
+              disabled={!keyword.trim() || isPending}
+              onClick={handleAddClick}
+              className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50"
             >
-              Add
+              {isPending ? 'Adding...' : 'Add'}
             </Button>
           </div>
           <p className="text-xs text-gray-500 mt-1 ml-1">

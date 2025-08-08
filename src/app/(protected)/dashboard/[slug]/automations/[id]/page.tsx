@@ -31,10 +31,11 @@ const Page = async ({ params }: Props) => {
   await PrefetchUserAutomation(query, params.id)
   const automationInfo = await getAutomationInfo(params.id)
   
-  // Check what step of the automation we're at
+  // Check what step of the automation we're at with proper validation
   const hasTrigger = (automationInfo?.data?.trigger?.length ?? 0) > 0
   const hasListener = automationInfo?.data?.listener !== null && automationInfo?.data?.listener !== undefined
   const hasPosts = (automationInfo?.data?.posts?.length ?? 0) > 0
+  const hasKeywords = (automationInfo?.data?.keywords?.length ?? 0) > 0
 
   return (
     <HydrationBoundary state={dehydrate(query)}>
@@ -80,7 +81,7 @@ const Page = async ({ params }: Props) => {
           </div>
         )}
         
-        {/* Trigger section - Add containing div with proper positioning */}
+        {/* Always show trigger section first */}
         <div className="w-full lg:w-10/12 xl:w-6/12 relative"> 
           <div className="p-5 rounded-xl flex flex-col bg-gradient-to-br from-slate-800 to-slate-900 gap-y-3 border border-slate-700/30 shadow-lg">
             <div className="flex gap-x-2 items-center mb-2">
@@ -91,27 +92,31 @@ const Page = async ({ params }: Props) => {
           </div>
         </div>
         
-        {/* Flow arrow */}
+        {/* Show flow arrow and next section only when trigger is completed */}
         {hasTrigger && (
-          <div className="flex flex-col items-center gap-y-2">
-            <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />
-            <p className="text-gray-400 text-sm">Then</p>
-          </div>
+          <>
+            <div className="flex flex-col items-center gap-y-2">
+              <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />
+              <p className="text-gray-400 text-sm">Then</p>
+            </div>
+            
+            {/* Action node (ThenNode) */}
+            <ThenNode id={params.id} />
+          </>
         )}
         
-        {/* Action node (ThenNode) */}
-        {(hasTrigger || hasListener) && <ThenNode id={params.id} />}
-        
-        {/* Flow arrow */}
-        {hasListener && (
-          <div className="flex flex-col items-center gap-y-2">
-            <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />
-            <p className="text-gray-400 text-sm">For</p>
-          </div>
+        {/* Show posts section only when listener is completed */}
+        {hasTrigger && hasListener && (
+          <>
+            <div className="flex flex-col items-center gap-y-2">
+              <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />
+              <p className="text-gray-400 text-sm">For</p>
+            </div>
+            
+            {/* Posts node */}
+            <PostNode id={params.id} />
+          </>
         )}
-        
-        {/* Posts node */}
-        {(hasListener || hasPosts) && <PostNode id={params.id} />}
       </div>
     </HydrationBoundary>
   )

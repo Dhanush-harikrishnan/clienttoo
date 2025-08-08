@@ -126,7 +126,9 @@ export const useTriggers = (id: string) => {
 
   useEffect(() => {
     if (success) {
+      // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['automation-info'] })
+      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
     }
   }, [success, queryClient])
   
@@ -138,7 +140,13 @@ export const useTriggers = (id: string) => {
 
   const { isPending, mutate } = useMutationData(
     ['add-trigger'],
-    (data: { types: string[] }) => saveTrigger(id, data.types),
+    async (data: { types: string[] }) => {
+      // Validate types before saving
+      if (!data.types || data.types.length === 0) {
+        throw new Error('Please select at least one trigger type');
+      }
+      return await saveTrigger(id, data.types);
+    },
     'automation-info',
     () => {
       setSuccess(true);
@@ -167,31 +175,37 @@ export const useKeywords = (id: string) => {
     ['add-keyword'],
     async (data: { keyword: string }) => {
       // Ensure keyword is not empty before saving
-      if (data.keyword.trim().length === 0) {
-        return { status: 400, data: 'Keyword cannot be empty' };
+      const trimmedKeyword = data.keyword.trim();
+      if (trimmedKeyword.length === 0) {
+        throw new Error('Keyword cannot be empty');
       }
-      return await saveKeyword(id, data.keyword.trim());
+      if (trimmedKeyword.length > 50) {
+        throw new Error('Keyword too long (max 50 characters)');
+      }
+      return await saveKeyword(id, trimmedKeyword);
     },
     'automation-info',
-    () => setKeyword('')
+    () => {
+      setKeyword('');
+    }
   )
 
   // Handle keypress for Enter key
   const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && keyword.trim().length > 0) {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      mutate({ keyword });
-      // Don't reset immediately to prevent UI flicker
-      setTimeout(() => setKeyword(''), 100);
+      const trimmedKeyword = keyword.trim();
+      if (trimmedKeyword.length > 0) {
+        mutate({ keyword: trimmedKeyword });
+      }
     }
   }
 
   // Handle manual add button click
   const onAddKeyword = () => {
-    if (keyword.trim().length > 0) {
-      mutate({ keyword });
-      // Don't reset immediately to prevent UI flicker
-      setTimeout(() => setKeyword(''), 100);
+    const trimmedKeyword = keyword.trim();
+    if (trimmedKeyword.length > 0) {
+      mutate({ keyword: trimmedKeyword });
     }
   }
 

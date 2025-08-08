@@ -113,7 +113,7 @@ const Page = async ({ params }: Props) => {
         )}
         
         {/* Show posts section only when listener is completed and trigger is 'COMMENT' */}
-        {hasTrigger && hasListener && automationInfo?.data?.trigger?.some(t => t.type === 'COMMENT') && (
+        {hasTrigger && isCommentTrigger && (
           <>
             <div className="flex flex-col items-center gap-y-2">
               <ArrowDownCircle className="text-blue-400 animate-bounce" size={24} />

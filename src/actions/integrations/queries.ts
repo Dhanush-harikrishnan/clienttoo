@@ -22,6 +22,8 @@ export const getIntegration = async (clerkId: string) => {
       clerkId,
     },
     select: {
+      firstname: true,
+      lastname: true,
       integrations: {
         where: {
           name: 'INSTAGRAM',

@@ -135,7 +135,8 @@ export const useTriggers = (id: string) => {
     if (type) {
       mutate({ type })
     }
-  }, [type, mutate])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type])
 
   return { onSetTrigger, isPending, type }
 }

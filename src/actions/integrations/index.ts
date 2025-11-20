@@ -39,13 +39,19 @@ export const onIntegrate = async (code: string) => {
         const expire_date = today.setDate(today.getDate() + 60)
         
         // Update existing integration
-        const update = await updateIntegration(
+        await updateIntegration(
           token.access_token,
           new Date(expire_date),
           integration.integrations[0].id
         )
         console.log('✅ Integration updated successfully')
-        return { status: 200, data: { firstname: user.firstname, lastname: user.lastname } }
+        return { 
+          status: 200, 
+          data: { 
+            firstname: integration.firstname, 
+            lastname: integration.lastname 
+          } 
+        }
       }
     }
 

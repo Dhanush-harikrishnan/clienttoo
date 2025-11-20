@@ -1,3 +1,4 @@
+'use client'
 import { useListener } from '@/hooks/use-automations'
 import React from 'react'
 import TriggerButton from '../trigger-button'

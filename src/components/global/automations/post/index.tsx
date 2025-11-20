@@ -81,19 +81,35 @@ const PostButton = ({ id }: Props) => {
                     }
                     key={post.id}
                     className={cn(
-                      'rounded-lg overflow-hidden cursor-pointer border-2 relative group',
+                      'rounded-lg overflow-hidden cursor-pointer border-2 relative group bg-slate-800',
                       posts.find((p) => p.postid === post.id)
                         ? 'border-blue-500'
                         : 'border-transparent'
                     )}
                   >
-                    <Image
-                      alt={post.caption || 'Instagram post'}
-                      src={post.media_url}
-                      width={400}
-                      height={400}
-                      className="object-cover aspect-square w-full transition-all duration-200 group-hover:opacity-80"
-                    />
+                    <div className="relative aspect-square w-full bg-gradient-to-br from-slate-700 to-slate-800">
+                      <Image
+                        alt={post.caption || 'Instagram post'}
+                        src={post.media_url}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition-all duration-200 group-hover:opacity-80"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzFmMjkzNyIvPjwvc3ZnPg=="
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.display = 'none'
+                          const parent = target.parentElement
+                          if (parent) {
+                            const fallback = document.createElement('div')
+                            fallback.className = 'absolute inset-0 flex items-center justify-center bg-slate-800'
+                            fallback.innerHTML = '<svg class="w-16 h-16 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>'
+                            parent.appendChild(fallback)
+                          }
+                        }}
+                      />
+                    </div>
                     {posts.find((p) => p.postid === post.id) && (
                       <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center backdrop-blur-[1px] z-10">
                         <div className="bg-blue-500 rounded-full p-1">
@@ -102,7 +118,7 @@ const PostButton = ({ id }: Props) => {
                       </div>
                     )}
                     {post.caption && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-6">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-6 z-[5]">
                         <p className="text-white text-sm line-clamp-2">
                           {post.caption}
                         </p>

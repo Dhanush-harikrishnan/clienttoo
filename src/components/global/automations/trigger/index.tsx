@@ -19,11 +19,16 @@ const Trigger = ({ id }: Props) => {
 
   if (data?.data && data?.data?.triggerType) {
     return (
-      <div className="flex flex-col gap-y-4 items-center w-full">
+      <div className="flex flex-col gap-y-4 w-full">
         <ActiveTrigger
           type={data.data.triggerType}
           keywords={data.data.keywords}
         />
+        
+        {/* Allow editing keywords after trigger is set */}
+        <div className="mt-2">
+          <Keywords id={id} />
+        </div>
       </div>
     )
   }

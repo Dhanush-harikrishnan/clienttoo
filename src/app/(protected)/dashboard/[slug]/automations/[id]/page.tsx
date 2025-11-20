@@ -33,8 +33,9 @@ const Page = async ({ params }: Props) => {
   await PrefetchUserAutomation(query, params.id)
   const automationInfo = await getAutomationInfo(params.id)
 
-  const hasTrigger = automationInfo.data?.triggerType !== null
+  const hasTrigger = automationInfo.data?.triggerType !== null && automationInfo.data?.triggerType !== undefined
   const hasListener = !!automationInfo.data?.listener
+  const hasKeywords = (automationInfo.data?.keywords?.length ?? 0) > 0
   const hasPosts = (automationInfo.data?.posts?.length ?? 0) > 0
 
   const isCommentTrigger = automationInfo.data?.triggerType === 'COMMENT'

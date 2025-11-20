@@ -1,6 +1,8 @@
 import { getAutomationInfo } from '@/actions/automations'
 import PostNode from '@/components/global/automations/post/node'
+import PostButton from '@/components/global/automations/post'
 import ThenNode from '@/components/global/automations/then/node'
+import ThenAction from '@/components/global/automations/then/then-action'
 import Trigger from '@/components/global/automations/trigger'
 import AutomationsBreadCrumb from '@/components/global/bread-crumbs/automations'
 import { Warning } from '@/icons'
@@ -110,24 +112,48 @@ const Page = async ({ params }: Props) => {
               <p className="text-gray-400 text-sm">Then</p>
             </div>
             
-            {/* Action node (ThenNode) */}
-            <ThenNode id={params.id} />
+            {/* Show ThenAction form if no listener, otherwise show ThenNode */}
+            {!hasListener ? (
+              <div className="w-full lg:w-10/12 xl:w-6/12 relative">
+                <div className="p-5 rounded-xl flex flex-col bg-gradient-to-br from-slate-800 to-slate-900 gap-y-3 border border-slate-700/30 shadow-lg">
+                  <div className="flex gap-x-2 items-center mb-2">
+                    <Warning />
+                    <h3 className="font-medium text-lg">Then do this...</h3>
+                  </div>
+                  <ThenAction id={params.id} />
+                </div>
+              </div>
+            ) : (
+              <ThenNode id={params.id} />
+            )}
           </>
         )}
 
         {/* Show posts section only when listener is completed and trigger is 'COMMENT' */}
-        {hasTrigger && isCommentTrigger && (
+        {hasTrigger && hasListener && isCommentTrigger && (
           <>
             <div className="flex flex-col items-center gap-y-2">
               <ArrowDownCircle
                 className="text-blue-400 animate-bounce"
                 size={24}
               />
-              <p className="text-gray-400 text-sm">For</p>
+              <p className="text-gray-400 text-sm">For these posts</p>
             </div>
 
-            {/* Posts node */}
-            <PostNode id={params.id} />
+            {/* Show post selection if no posts, otherwise show PostNode */}
+            {!hasPosts ? (
+              <div className="w-full lg:w-10/12 xl:w-6/12 relative">
+                <div className="p-5 rounded-xl flex flex-col bg-gradient-to-br from-slate-800 to-slate-900 gap-y-3 border border-slate-700/30 shadow-lg">
+                  <div className="flex gap-x-2 items-center mb-2">
+                    <Warning />
+                    <h3 className="font-medium text-lg">Select Posts to Monitor</h3>
+                  </div>
+                  <PostButton id={params.id} />
+                </div>
+              </div>
+            ) : (
+              <PostNode id={params.id} />
+            )}
           </>
         )}
       </div>

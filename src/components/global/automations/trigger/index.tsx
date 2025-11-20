@@ -2,7 +2,6 @@
 import { useQueryAutomation } from '@/hooks/user-queries'
 import React from 'react'
 import ActiveTrigger from './active'
-import ThenAction from '../then/then-action'
 import TriggerButton from '../trigger-button'
 import { AUTOMATION_TRIGGERS } from '@/constants/automation'
 import { useTriggers } from '@/hooks/use-automations'
@@ -20,13 +19,11 @@ const Trigger = ({ id }: Props) => {
 
   if (data?.data && data?.data?.triggerType) {
     return (
-      <div className="flex flex-col ga-y-6 items-center w-full">
+      <div className="flex flex-col gap-y-4 items-center w-full">
         <ActiveTrigger
           type={data.data.triggerType}
           keywords={data.data.keywords}
         />
-
-        {!data.data.listener && <ThenAction id={id} />}
       </div>
     )
   }

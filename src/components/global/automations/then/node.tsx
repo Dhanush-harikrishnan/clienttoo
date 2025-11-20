@@ -3,7 +3,6 @@ import { Separator } from '@/components/ui/separator'
 import { useQueryAutomation } from '@/hooks/user-queries'
 import { PlaneBlue, GeminiAi, Warning } from '@/icons'
 import React from 'react'
-import PostButton from '../post'
 
 type Props = {
   id: string
@@ -11,8 +10,6 @@ type Props = {
 
 const ThenNode = ({ id }: Props) => {
   const { data } = useQueryAutomation(id)
-  // Check for triggerType
-  const hasTriggers = data?.data?.triggerType !== null && data?.data?.triggerType !== undefined
 
   return !data?.data?.listener ? (
     <></>
@@ -47,13 +44,6 @@ const ThenNode = ({ id }: Props) => {
           {data.data.listener.prompt}
         </p>
       </div>
-      
-      {/* Show post button if there are no posts yet but there are triggers */}
-      {data.data.posts && Array.isArray(data.data.posts) && data.data.posts.length === 0 && hasTriggers && (
-        <div className="mt-4">
-          <PostButton id={id} />
-        </div>
-      )}
     </div>
   )
 }

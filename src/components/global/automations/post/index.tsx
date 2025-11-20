@@ -23,6 +23,14 @@ const PostButton = ({ id }: Props) => {
   const instagramPosts = data?.data?.data || []
   const hasError = data?.status !== 200
   const isLoading = !data
+  const errorMessage = data?.data?.message || data?.data?.error?.message
+
+  console.log('PostButton data:', { 
+    status: data?.status, 
+    hasData: !!data?.data, 
+    postsCount: instagramPosts.length,
+    errorMessage 
+  })
 
   return (
     <>
@@ -46,10 +54,17 @@ const PostButton = ({ id }: Props) => {
             </div>
           ) : hasError || instagramPosts.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 bg-slate-800/50 rounded-lg border border-slate-700/50">
-              <p className="text-gray-400 text-sm">No Instagram posts found</p>
-              <p className="text-gray-600 text-xs mt-1">
-                {hasError ? 'Unable to fetch posts. Check your Instagram connection.' : 'Connect your Instagram account to use this feature'}
+              <p className="text-gray-400 text-sm">
+                {instagramPosts.length === 0 ? 'No Instagram posts found' : 'Unable to load posts'}
               </p>
+              <p className="text-gray-600 text-xs mt-1">
+                {errorMessage || 'Check your Instagram connection and try again'}
+              </p>
+              {hasError && (
+                <p className="text-gray-500 text-xs mt-2 max-w-md text-center">
+                  Status: {data?.status} - Make sure your Instagram Business account is properly connected
+                </p>
+              )}
             </div>
           ) : (
             <>

@@ -182,21 +182,66 @@ export const getProfilePosts = async () => {
   const user = await onCurrentUser()
   try {
     const profile = await findUser(user.id)
+    console.log('📊 Profile check:', { 
+      hasProfile: !!profile, 
+      hasIntegrations: !!profile?.integrations,
+      integrationsCount: profile?.integrations?.length 
+    })
+    
     if (!profile || !profile.integrations || !profile.integrations[0]) {
       console.log('🔴 Error: Profile or integrations not found')
-      return { status: 404, data: 'Profile or integrations not found' }
+      return { status: 404, data: { message: 'Profile or integrations not found' } }
     }
 
-    const posts = await fetch(
-      `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile.integrations[0].token}`
-    )
-    const parsed = await posts.json()
-    if (parsed) return { status: 200, data: parsed }
-    console.log('🔴 Error in getting posts')
-    return { status: 404 }
+    const integration = profile.integrations[0]
+    console.log('🔗 Integration details:', {
+      id: integration.id,
+      name: integration.name,
+      hasToken: !!integration.token,
+      instagramId: integration.instagramId
+    })
+
+    const url = `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${integration.token}`
+    console.log('📡 Fetching Instagram posts...')
+    
+    const response = await fetch(url)
+    const parsed = await response.json()
+    
+    console.log('📥 Instagram API Response:', {
+      status: response.status,
+      ok: response.ok,
+      hasData: !!parsed.data,
+      dataCount: parsed.data?.length,
+      error: parsed.error
+    })
+
+    if (parsed.error) {
+      console.log('🔴 Instagram API Error:', parsed.error)
+      return { 
+        status: 400, 
+        data: { 
+          message: parsed.error.message || 'Instagram API error',
+          error: parsed.error 
+        } 
+      }
+    }
+
+    if (parsed.data && Array.isArray(parsed.data)) {
+      console.log('✅ Successfully fetched', parsed.data.length, 'posts')
+      return { status: 200, data: parsed }
+    }
+    
+    console.log('🔴 No posts data in response')
+    return { status: 404, data: { message: 'No posts found' } }
   } catch (error) {
-    console.log('🔴 server side Error in getting posts ', error)
-    return { status: 500 }
+    console.error('🔴 Server error in getting posts:', error)
+    return { 
+      status: 500, 
+      data: { 
+        message: 'Server error while fetching posts',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      } 
+    }
   }
 }
 

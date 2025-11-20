@@ -8,6 +8,7 @@ import { AUTOMATION_TRIGGERS } from '@/constants/automation'
 import { useTriggers } from '@/hooks/use-automations'
 import { cn } from '@/lib/utils'
 import Keywords from './keywords'
+import { AlertCircle } from 'lucide-react'
 
 type Props = {
   id: string

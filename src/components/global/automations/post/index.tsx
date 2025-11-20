@@ -20,6 +20,10 @@ const PostButton = ({ id }: Props) => {
   const { data } = useQueryAutomationPosts()
   const { posts, onSelectPost, mutate, isPending, success } = useAutomationPosts(id)
 
+  const instagramPosts = data?.data?.data || []
+  const hasError = data?.status !== 200
+  const isLoading = !data
+
   return (
     <>
       <SuccessIndicator showSuccess={success} />
@@ -35,10 +39,22 @@ const PostButton = ({ id }: Props) => {
             </p>
           </div>
           
-          {data?.status === 200 ? (
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center h-40 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <Spinner />
+              <p className="text-gray-400 text-sm mt-3">Loading your Instagram posts...</p>
+            </div>
+          ) : hasError || instagramPosts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-40 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <p className="text-gray-400 text-sm">No Instagram posts found</p>
+              <p className="text-gray-600 text-xs mt-1">
+                {hasError ? 'Unable to fetch posts. Check your Instagram connection.' : 'Connect your Instagram account to use this feature'}
+              </p>
+            </div>
+          ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {data.data.data.map((post: InstagramPostProps) => (
+                {instagramPosts.map((post: InstagramPostProps) => (
                   <div
                     onClick={() =>
                       onSelectPost({
@@ -101,13 +117,6 @@ const PostButton = ({ id }: Props) => {
                 )}
               </Button>
             </>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-40 bg-slate-800/50 rounded-lg border border-slate-700/50">
-              <p className="text-gray-400 text-sm">No Instagram posts found</p>
-              <p className="text-gray-600 text-xs mt-1">
-                Connect your Instagram account to use this feature
-              </p>
-            </div>
           )}
         </div>
       </TriggerButton>

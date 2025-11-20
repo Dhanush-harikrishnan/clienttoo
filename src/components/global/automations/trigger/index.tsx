@@ -2,24 +2,19 @@
 import { useQueryAutomation } from '@/hooks/user-queries'
 import React from 'react'
 import ActiveTrigger from './active'
-import { Separator } from '@/components/ui/separator'
 import ThenAction from '../then/then-action'
 import TriggerButton from '../trigger-button'
 import { AUTOMATION_TRIGGERS } from '@/constants/automation'
 import { useTriggers } from '@/hooks/use-automations'
 import { cn } from '@/lib/utils'
 import Keywords from './keywords'
-import { Button } from '@/components/ui/button'
-import Loader from '../../loader'
-import { AlertCircle, CheckCircle } from 'lucide-react'
-import SuccessIndicator from '../success-indicator'
 
 type Props = {
   id: string
 }
 
 const Trigger = ({ id }: Props) => {
-  const { types, onSetTrigger, onSaveTrigger, isPending, success } = useTriggers(id)
+  const { type, onSetTrigger, isPending } = useTriggers(id)
   const { data } = useQueryAutomation(id)
 
   if (data?.data && data?.data?.triggerType) {
@@ -36,8 +31,6 @@ const Trigger = ({ id }: Props) => {
   }
   return (
     <>
-      <SuccessIndicator showSuccess={success} />
-      
       <TriggerButton label="Set Up Automation Trigger">
         <div className="flex flex-col gap-y-5">
           {/* Instruction text */}
@@ -55,7 +48,7 @@ const Trigger = ({ id }: Props) => {
                 onClick={() => onSetTrigger(trigger.type)}
                 className={cn(
                   'transition-all duration-200 text-white rounded-xl flex cursor-pointer flex-col p-4 gap-y-2',
-                  !types?.find((t) => t === trigger.type)
+                  type !== trigger.type
                     ? 'bg-slate-800 hover:bg-slate-700'
                     : 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-500/10'
                 )}
@@ -70,26 +63,6 @@ const Trigger = ({ id }: Props) => {
           </div>
           
           <Keywords id={id} />
-          
-          <Button
-            onClick={onSaveTrigger}
-            disabled={types?.length === 0 || isPending}
-            className={cn(
-              "w-full transition-all duration-200 mt-4 flex items-center justify-center gap-2",
-              (types || []).length > 0 && !isPending
-                ? "bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium" 
-                : "bg-slate-700 text-slate-300 cursor-not-allowed"
-            )}
-          >
-            {isPending ? (
-              <Loader state={true}><span>Saving...</span></Loader>
-            ) : (
-              <>
-                <span>{types?.length === 0 ? "Select a Trigger Type" : "Save Trigger"}</span>
-                {success && <CheckCircle size={16} className="text-green-200" />}
-              </>
-            )}
-          </Button>
         </div>
       </TriggerButton>
     </>

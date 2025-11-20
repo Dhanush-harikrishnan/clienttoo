@@ -11,8 +11,8 @@ type Props = {
 
 const ThenNode = ({ id }: Props) => {
   const { data } = useQueryAutomation(id)
-  // Check for both COMMENT and DM triggers
-  const hasTriggers = data?.data?.trigger && Array.isArray(data.data.trigger) && data.data.trigger.length > 0
+  // Check for triggerType
+  const hasTriggers = data?.data?.triggerType !== null && data?.data?.triggerType !== undefined
 
   return !data?.data?.listener ? (
     <></>

@@ -22,31 +22,13 @@ const Trigger = ({ id }: Props) => {
   const { types, onSetTrigger, onSaveTrigger, isPending, success } = useTriggers(id)
   const { data } = useQueryAutomation(id)
 
-  if (data?.data && data?.data?.trigger.length > 0) {
+  if (data?.data && data?.data?.triggerType) {
     return (
       <div className="flex flex-col ga-y-6 items-center w-full">
         <ActiveTrigger
-          type={data.data.trigger[0].type}
+          type={data.data.triggerType}
           keywords={data.data.keywords}
         />
-
-        {data?.data?.trigger.length > 1 && (
-          <>
-            <div className="relative w-full my-4">
-              <p className="absolute transform px-4 bg-slate-800 -translate-y-1/2 top-1/2 -translate-x-1/2 left-1/2 font-medium text-blue-400">
-                OR
-              </p>
-              <Separator
-                orientation="horizontal"
-                className="border-slate-700 border-[1px]"
-              />
-            </div>
-            <ActiveTrigger
-              type={data.data.trigger[1].type}
-              keywords={data.data.keywords}
-            />
-          </>
-        )}
 
         {!data.data.listener && <ThenAction id={id} />}
       </div>

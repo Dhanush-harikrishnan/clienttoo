@@ -15,7 +15,7 @@ const PostNode = ({ id }: Props) => {
   
   const hasPostsAndTriggers = 
     data?.data?.posts && Array.isArray(data.data.posts) && data.data.posts.length > 0 && 
-    data?.data?.trigger && Array.isArray(data.data.trigger) && data.data.trigger.length > 0;
+    data?.data?.triggerType === 'COMMENT';
 
   if (!hasPostsAndTriggers) {
     return null;

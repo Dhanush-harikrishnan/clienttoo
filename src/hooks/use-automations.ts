@@ -16,10 +16,16 @@ import { useEffect, useRef, useState } from 'react'
 import useZodForm from './use-zod-form'
 
 export const useCreateAutomation = (id?: string) => {
+  const queryClient = useQueryClient()
+  
   const { isPending, mutate } = useMutationData(
     ['create-automation'],
     () => createAutomations(id),
-    'user-automations'
+    'user-automations',
+    () => {
+      // Force immediate refetch of automations list
+      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
+    }
   )
 
   return { isPending, mutate }
@@ -252,11 +258,19 @@ export const useAutomationPosts = (id: string) => {
 
 export const useDeleteAutomation = (id: string) => {
   const router = useRouter()
+  const queryClient = useQueryClient()
+  
   const { isPending, mutate } = useMutationData(
     ['delete-automation'],
-    () => onSaveTrigger(id, 'DM'),
+    async () => {
+      const { deleteAutomation } = await import('@/actions/automations')
+      return deleteAutomation(id)
+    },
     ['user-automations'],
     () => {
+      // Invalidate both the list and individual automation queries
+      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
+      queryClient.removeQueries({ queryKey: ['automation-info', id] })
       router.push('/dashboard')
     }
   )

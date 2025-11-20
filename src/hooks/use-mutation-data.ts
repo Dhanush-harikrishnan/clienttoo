@@ -33,9 +33,12 @@ export const useMutationData = (
     },
     onSettled: async () => {
       if (queryKey) {
-        const keys = Array.isArray(queryKey) ? queryKey : [queryKey];
-        for (const key of keys) {
-          await client.invalidateQueries({ queryKey: [key] })
+        // If queryKey is already an array (like ['automation-info', id]), use it directly
+        if (Array.isArray(queryKey)) {
+          await client.invalidateQueries({ queryKey })
+        } else {
+          // If it's a string, wrap it in an array
+          await client.invalidateQueries({ queryKey: [queryKey] })
         }
       }
     },

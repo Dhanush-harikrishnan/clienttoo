@@ -10,6 +10,8 @@ export const useQueryAutomations = () => {
   return useQuery({
     queryKey: ['user-automations'],
     queryFn: getAllAutomations,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   })
 }
 
@@ -17,6 +19,7 @@ export const useQueryAutomation = (id: string) => {
   return useQuery({
     queryKey: ['automation-info', id],
     queryFn: () => getAutomationInfo(id),
+    refetchOnMount: true,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to get latest data
   })

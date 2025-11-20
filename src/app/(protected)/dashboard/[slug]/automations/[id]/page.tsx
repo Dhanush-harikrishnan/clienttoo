@@ -1,4 +1,5 @@
-import { getAutomationInfo } from '@/actions/automations'
+'use client'
+import { useQueryAutomation } from '@/hooks/user-queries'
 import PostNode from '@/components/global/automations/post/node'
 import PostButton from '@/components/global/automations/post'
 import ThenNode from '@/components/global/automations/then/node'
@@ -6,45 +7,27 @@ import ThenAction from '@/components/global/automations/then/then-action'
 import Trigger from '@/components/global/automations/trigger'
 import AutomationsBreadCrumb from '@/components/global/bread-crumbs/automations'
 import { Warning } from '@/icons'
-import { PrefetchUserAutomation } from '@/react-query/prefetch'
 import { ArrowDownCircle, CheckCircle, InfoIcon } from 'lucide-react'
-
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from '@tanstack/react-query'
-
 import React from 'react'
 
 type Props = {
   params: { id: string }
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const info = await getAutomationInfo(params.id)
-  return {
-    title: info.data?.name || 'Automation Setup',
-  }
-}
+const Page = ({ params }: Props) => {
+  const { data: automationInfo } = useQueryAutomation(params.id)
 
-const Page = async ({ params }: Props) => {
-  const query = new QueryClient()
-  await PrefetchUserAutomation(query, params.id)
-  const automationInfo = await getAutomationInfo(params.id)
+  const hasTrigger = automationInfo?.data?.triggerType !== null && automationInfo?.data?.triggerType !== undefined
+  const hasListener = !!automationInfo?.data?.listener
+  const hasKeywords = (automationInfo?.data?.keywords?.length ?? 0) > 0
+  const hasPosts = (automationInfo?.data?.posts?.length ?? 0) > 0
 
-  const hasTrigger = automationInfo.data?.triggerType !== null && automationInfo.data?.triggerType !== undefined
-  const hasListener = !!automationInfo.data?.listener
-  const hasKeywords = (automationInfo.data?.keywords?.length ?? 0) > 0
-  const hasPosts = (automationInfo.data?.posts?.length ?? 0) > 0
-
-  const isCommentTrigger = automationInfo.data?.triggerType === 'COMMENT'
+  const isCommentTrigger = automationInfo?.data?.triggerType === 'COMMENT'
   const allStepsCompleted =
     hasTrigger && hasListener && (isCommentTrigger ? hasPosts : true)
 
   return (
-    <HydrationBoundary state={dehydrate(query)}>
-      <div className="flex flex-col items-center gap-y-8 py-6">
+    <div className="flex flex-col items-center gap-y-8 py-6">
         <AutomationsBreadCrumb id={params.id} />
         
         {/* Progress indicator */}
@@ -158,7 +141,6 @@ const Page = async ({ params }: Props) => {
           </>
         )}
       </div>
-    </HydrationBoundary>
   )
 }
 

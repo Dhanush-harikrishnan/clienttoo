@@ -35,7 +35,7 @@ export const useEditAutomation = (automationId: string) => {
     ['update-automation'],
     (data: { name: string }) =>
       updateAutomationName(automationId, { name: data.name }),
-    ['automation-info', 'user-automations'],
+    ['automation-info', automationId],
     disableEdit
   )
 
@@ -75,9 +75,9 @@ export const useListener = (id: string) => {
 
   useEffect(() => {
     if (success) {
-      queryClient.invalidateQueries({ queryKey: ['automation-info'] })
+      queryClient.invalidateQueries({ queryKey: ['automation-info', id] })
     }
-  }, [success, queryClient])
+  }, [success, queryClient, id])
 
   // Debug listener changes
   useEffect(() => {
@@ -96,7 +96,7 @@ export const useListener = (id: string) => {
       console.log("Mutation data:", data, "Listener type:", listener);
       return saveListener(id, listener || 'MESSAGE', data.prompt, data.reply || "");
     },
-    ['automation-info', 'user-automations'],
+    ['automation-info', id],
     () => {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -118,7 +118,7 @@ export const useTriggers = (id: string) => {
   const { isPending, mutate } = useMutationData(
     ['add-trigger'],
     (data: { type: 'COMMENT' | 'DM' }) => onSaveTrigger(id, data.type),
-    ['automation-info', 'user-automations']
+    ['automation-info', id]
   )
 
   const onSetTrigger = (type: 'COMMENT' | 'DM') => {
@@ -155,7 +155,7 @@ export const useKeywords = (id: string) => {
       }
       return await saveKeyword(id, trimmedKeyword);
     },
-    ['automation-info', 'user-automations'],
+    ['automation-info', id],
     () => {
       setKeyword('');
     }
@@ -183,7 +183,7 @@ export const useKeywords = (id: string) => {
   const { mutate: deleteMutation } = useMutationData(
     ['delete-keyword'],
     (data: { id: string }) => deleteKeyword(data.id),
-    ['automation-info', 'user-automations']
+    ['automation-info', id]
   )
 
   return { 
@@ -211,9 +211,9 @@ export const useAutomationPosts = (id: string) => {
 
   useEffect(() => {
     if (success) {
-      queryClient.invalidateQueries({ queryKey: ['automation-info'] })
+      queryClient.invalidateQueries({ queryKey: ['automation-info', id] })
     }
-  }, [success, queryClient])
+  }, [success, queryClient, id])
 
   const onSelectPost = (post: {
     postid: string
@@ -233,7 +233,7 @@ export const useAutomationPosts = (id: string) => {
   const { mutate, isPending } = useMutationData(
     ['attach-posts'],
     () => savePosts(id, posts),
-    ['automation-info', 'user-automations'],
+    ['automation-info', id],
     () => {
       setPosts([]);
       setSuccess(true);

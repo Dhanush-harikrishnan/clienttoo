@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
           true // This is for DM trigger
         )
 
-        if (automation && automation.trigger) {
+        if (automation) {
           console.log('Processing DM trigger automation')
           
           if (
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
 
         console.log('Found keyword in selected post:', automations_post)
 
-        if (automation && automations_post && automation.trigger) {
+        if (automation && automations_post) {
           console.log('Comment trigger validation passed')
           
           if (automation.listener) {

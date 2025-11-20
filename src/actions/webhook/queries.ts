@@ -17,17 +17,13 @@ export const getKeywordAutomation = async (
 ) => {
   const triggerType = dm ? 'DM' : 'COMMENT';
   
-  return await client.automation.findUnique({
+  return await client.automation.findFirst({
     where: {
       id: automationId,
+      triggerType: triggerType,
     },
     include: {
       dms: dm,
-      trigger: {
-        where: {
-          type: triggerType,
-        },
-      },
       listener: true,
       User: {
         include: {

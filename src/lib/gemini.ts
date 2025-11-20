@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_KEY = process.env.GEMINI_API_KEY;
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 interface GeminiResponse {
   candidates: {

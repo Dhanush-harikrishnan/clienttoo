@@ -1,7 +1,7 @@
 'use client'
 import { useAutomationPosts } from '@/hooks/use-automations'
 import { useQueryAutomationPosts } from '@/hooks/user-queries'
-import React from 'react'
+import React, { useState } from 'react'
 import TriggerButton from '../trigger-button'
 import { InstagramPostProps } from '@/types/posts.type'
 import { CheckCircle, InstagramIcon } from 'lucide-react'
@@ -14,6 +14,78 @@ import { Spinner } from '../../loader/spinner'
 
 type Props = {
   id: string
+}
+
+const PostCard = ({ post, isSelected, onClick }: { 
+  post: InstagramPostProps
+  isSelected: boolean
+  onClick: () => void
+}) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        'rounded-lg overflow-hidden cursor-pointer border-2 relative group bg-slate-800/50',
+        isSelected ? 'border-blue-500' : 'border-slate-700 hover:border-slate-600'
+      )}
+    >
+      <div className="relative aspect-square w-full">
+        {/* Loading skeleton */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 animate-pulse flex items-center justify-center">
+            <InstagramIcon className="w-12 h-12 text-slate-600" />
+          </div>
+        )}
+        
+        {/* Error fallback */}
+        {imageError && (
+          <div className="absolute inset-0 bg-slate-800 flex flex-col items-center justify-center gap-2">
+            <svg className="w-16 h-16 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd"/>
+            </svg>
+            <span className="text-xs text-slate-500">Image unavailable</span>
+          </div>
+        )}
+        
+        {/* Actual image */}
+        {!imageError && (
+          <Image
+            alt={post.caption || 'Instagram post'}
+            src={post.media_url}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className={cn(
+              'object-cover transition-all duration-300',
+              imageLoaded ? 'opacity-100' : 'opacity-0',
+              'group-hover:scale-105'
+            )}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+            unoptimized
+          />
+        )}
+      </div>
+      
+      {isSelected && (
+        <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center backdrop-blur-[1px] z-10">
+          <div className="bg-blue-500 rounded-full p-2 shadow-lg">
+            <CheckCircle color="white" size={24} />
+          </div>
+        </div>
+      )}
+      
+      {post.caption && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3 pt-8 z-[5]">
+          <p className="text-white text-xs line-clamp-2 font-medium">
+            {post.caption}
+          </p>
+        </div>
+      )}
+    </div>
+  )
 }
 
 const PostButton = ({ id }: Props) => {
@@ -70,7 +142,10 @@ const PostButton = ({ id }: Props) => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {instagramPosts.map((post: InstagramPostProps) => (
-                  <div
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    isSelected={!!posts.find((p) => p.postid === post.id)}
                     onClick={() =>
                       onSelectPost({
                         postid: post.id,
@@ -79,52 +154,7 @@ const PostButton = ({ id }: Props) => {
                         mediaType: post.media_type,
                       })
                     }
-                    key={post.id}
-                    className={cn(
-                      'rounded-lg overflow-hidden cursor-pointer border-2 relative group bg-slate-800',
-                      posts.find((p) => p.postid === post.id)
-                        ? 'border-blue-500'
-                        : 'border-transparent'
-                    )}
-                  >
-                    <div className="relative aspect-square w-full bg-gradient-to-br from-slate-700 to-slate-800">
-                      <Image
-                        alt={post.caption || 'Instagram post'}
-                        src={post.media_url}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition-all duration-200 group-hover:opacity-80"
-                        loading="lazy"
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzFmMjkzNyIvPjwvc3ZnPg=="
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.style.display = 'none'
-                          const parent = target.parentElement
-                          if (parent) {
-                            const fallback = document.createElement('div')
-                            fallback.className = 'absolute inset-0 flex items-center justify-center bg-slate-800'
-                            fallback.innerHTML = '<svg class="w-16 h-16 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>'
-                            parent.appendChild(fallback)
-                          }
-                        }}
-                      />
-                    </div>
-                    {posts.find((p) => p.postid === post.id) && (
-                      <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center backdrop-blur-[1px] z-10">
-                        <div className="bg-blue-500 rounded-full p-1">
-                          <CheckCircle color="white" size={18} />
-                        </div>
-                      </div>
-                    )}
-                    {post.caption && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-6 z-[5]">
-                        <p className="text-white text-sm line-clamp-2">
-                          {post.caption}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  />
                 ))}
               </div>
               

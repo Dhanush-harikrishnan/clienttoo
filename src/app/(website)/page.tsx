@@ -63,9 +63,11 @@ export default function Home() {
             Automate your Instagram engagement with AI-powered tools. Build genuine connections and grow your audience organically.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
+               <Link href="/dashboard">
             <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white px-8">
               Start Free Trial
             </Button>
+                  </Link>
             <Button size="lg" variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-950/50">
               Watch Demo
             </Button>

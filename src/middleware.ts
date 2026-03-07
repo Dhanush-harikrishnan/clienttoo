@@ -19,7 +19,7 @@ export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl.clone()
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (userId && (url.pathname === '/sign-in' || url.pathname === '/sign-up')) {
+  if (userId && (url.pathname.startsWith('/sign-in') || url.pathname.startsWith('/sign-up'))) {
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }

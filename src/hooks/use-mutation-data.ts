@@ -14,9 +14,21 @@ export const useMutationData = (
   onSuccess?: () => void
 ) => {
   const client = useQueryClient()
+  const normalizedKey = queryKey
+    ? Array.isArray(queryKey)
+      ? queryKey
+      : [queryKey]
+    : undefined
+
   const { mutate, isPending } = useMutation({
     mutationKey,
     mutationFn,
+    onMutate: async () => {
+      // Cancel in-flight queries so optimistic data isn't overwritten
+      if (normalizedKey) {
+        await client.cancelQueries({ queryKey: normalizedKey })
+      }
+    },
     onSuccess: (data) => {
       if (data?.status === 200 && onSuccess) {
         onSuccess()
@@ -32,14 +44,9 @@ export const useMutationData = (
       })
     },
     onSettled: async () => {
-      if (queryKey) {
-        // If queryKey is already an array (like ['automation-info', id]), use it directly
-        if (Array.isArray(queryKey)) {
-          await client.invalidateQueries({ queryKey })
-        } else {
-          // If it's a string, wrap it in an array
-          await client.invalidateQueries({ queryKey: [queryKey] })
-        }
+      // Single invalidation point — refetch fresh data after mutation
+      if (normalizedKey) {
+        await client.invalidateQueries({ queryKey: normalizedKey })
       }
     },
   })

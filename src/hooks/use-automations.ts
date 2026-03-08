@@ -16,16 +16,10 @@ import { useEffect, useRef, useState } from 'react'
 import useZodForm from './use-zod-form'
 
 export const useCreateAutomation = (id?: string) => {
-  const queryClient = useQueryClient()
-  
   const { isPending, mutate } = useMutationData(
     ['create-automation'],
     () => createAutomations(id),
-    'user-automations',
-    () => {
-      // Force immediate refetch of automations list
-      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
-    }
+    'user-automations'
   )
 
   return { isPending, mutate }
@@ -77,19 +71,6 @@ export const useListener = (id: string) => {
   const [listener, setListener] = useState<'MESSAGE' | 'GEMINI' | null>(null)
   const [success, setSuccess] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (success) {
-      queryClient.invalidateQueries({ queryKey: ['automation-info', id] })
-    }
-  }, [success, queryClient, id])
-
-  // Debug listener changes
-  useEffect(() => {
-    console.log("Listener type selected:", listener);
-  }, [listener]);
-
   // Simplified schema with proper optional field
   const promptSchema = z.object({
     prompt: z.string().min(1),
@@ -99,7 +80,6 @@ export const useListener = (id: string) => {
   const { isPending, mutate } = useMutationData(
     ['create-lister'],
     (data: { prompt: string; reply?: string }) => {
-      console.log("Mutation data:", data, "Listener type:", listener);
       return saveListener(id, listener || 'MESSAGE', data.prompt, data.reply || "");
     },
     ['automation-info', id],
@@ -214,14 +194,6 @@ export const useAutomationPosts = (id: string) => {
   >([])
   const [success, setSuccess] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (success) {
-      queryClient.invalidateQueries({ queryKey: ['automation-info', id] })
-    }
-  }, [success, queryClient, id])
-
   const onSelectPost = (post: {
     postid: string
     caption?: string
@@ -269,8 +241,6 @@ export const useDeleteAutomation = (id: string) => {
     },
     ['user-automations'],
     () => {
-      // Invalidate both the list and individual automation queries
-      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
       queryClient.removeQueries({ queryKey: ['automation-info', id] })
       router.push('/dashboard')
     }

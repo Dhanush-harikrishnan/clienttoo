@@ -15,7 +15,6 @@ const CreateAutomation = (props: Props) => {
   const router = useRouter()
   const pathname = usePathname()
 
-  console.log(mutationId)
   const { isPending, mutate } = useCreateAutomation(mutationId)
 
   const handleCreate = () => {

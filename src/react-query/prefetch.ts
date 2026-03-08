@@ -11,7 +11,7 @@ const prefetch = async (
   return await client.prefetchQuery({
     queryKey,
     queryFn: action,
-    staleTime: 30000,
+    staleTime: 0,
   })
 }
 

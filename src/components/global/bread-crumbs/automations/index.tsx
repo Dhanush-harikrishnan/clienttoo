@@ -27,7 +27,7 @@ type Props = {
 const AutomationsBreadCrumb = ({ id }: Props) => {
   const { data } = useQueryAutomation(id)
   const { edit, enableEdit, inputRef, isPending } = useEditAutomation(id)
-  const { isPending: isDeleting, mutate: deleteAutomation } = useDeleteAutomation(id)
+  const { isPending: isDeleting, mutate: deleteAutomation } = useDeleteAutomation(id, { redirectAfter: true })
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const { latestVariable } = useMutationDataState(['update-automation'])

@@ -11,8 +11,10 @@ const ReactQueryProvider = ({ children }: Props) => {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 30 * 1000, // 30s before data is considered stale
+            staleTime: 0, // always refetch on mount for cross-page freshness
+            gcTime: 5 * 60 * 1000, // keep cache for 5 min (background)
             refetchOnWindowFocus: true,
+            refetchOnMount: true,
           },
         },
       })

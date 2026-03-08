@@ -9,11 +9,12 @@ import {
   updateAutomationName,
 } from '@/actions/automations'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMutationData } from './use-mutation-data'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import useZodForm from './use-zod-form'
+import { toast } from 'sonner'
 
 export const useCreateAutomation = (id?: string) => {
   const { isPending, mutate } = useMutationData(
@@ -229,22 +230,55 @@ export const useAutomationPosts = (id: string) => {
   return { posts, onSelectPost, mutate: onAttachPosts, isPending, success }
 }
 
-export const useDeleteAutomation = (id: string) => {
+export const useDeleteAutomation = (id: string, options?: { redirectAfter?: boolean }) => {
   const router = useRouter()
   const queryClient = useQueryClient()
-  
-  const { isPending, mutate } = useMutationData(
-    ['delete-automation'],
-    async () => {
+  const shouldRedirect = options?.redirectAfter ?? false
+
+  const { isPending, mutate } = useMutation({
+    mutationKey: ['delete-automation', id],
+    mutationFn: async () => {
       const { deleteAutomation } = await import('@/actions/automations')
       return deleteAutomation(id)
     },
-    ['user-automations'],
-    () => {
+    onMutate: async () => {
+      // Cancel running queries
+      await queryClient.cancelQueries({ queryKey: ['user-automations'] })
+
+      // Snapshot current data for rollback
+      const previous = queryClient.getQueryData(['user-automations'])
+
+      // Optimistically remove from the list immediately
+      queryClient.setQueryData(['user-automations'], (old: any) => {
+        if (!old?.data) return old
+        return {
+          ...old,
+          data: old.data.filter((a: any) => a.id !== id),
+        }
+      })
+
+      return { previous }
+    },
+    onSuccess: (data) => {
       queryClient.removeQueries({ queryKey: ['automation-info', id] })
-      router.push('/dashboard')
-    }
-  )
+      if (shouldRedirect) {
+        router.push('/dashboard')
+      }
+      toast(data?.status === 200 ? 'Success' : 'Error', {
+        description: data?.status === 200 ? 'Automation deleted' : 'Failed to delete',
+      })
+    },
+    onError: (_err, _vars, context: any) => {
+      // Roll back to previous data on error
+      if (context?.previous) {
+        queryClient.setQueryData(['user-automations'], context.previous)
+      }
+      toast('Error', { description: 'Failed to delete automation. Please try again.' })
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-automations'] })
+    },
+  })
 
   return {
     isPending,

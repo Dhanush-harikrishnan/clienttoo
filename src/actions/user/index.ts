@@ -21,25 +21,27 @@ export const onBoardUser = async () => {
     if (found) {
       if (found.integrations.length > 0) {
         const today = new Date()
-        const time_left =
-          found.integrations[0].expiresAt?.getTime()! - today.getTime()
-
-        const days = Math.round(time_left / (1000 * 3600 * 24))
-        if (days < 5) {
-          console.log('refresh')
-
-          const refresh = await refreshToken(found.integrations[0].token)
-
-          const today = new Date()
-          const expire_date = today.setDate(today.getDate() + 60)
-
-          const update_token = await updateIntegration(
-            refresh.access_token,
-            new Date(expire_date),
-            found.integrations[0].id
-          )
-          if (!update_token) {
-            console.log('Update token failed')
+        const expiresAt = found.integrations[0].expiresAt?.getTime()
+        
+        if (expiresAt) {
+          const time_left = expiresAt - today.getTime()
+          const days = Math.round(time_left / (1000 * 3600 * 24))
+          
+          if (days < 5) {
+            try {
+              const refresh = await refreshToken(found.integrations[0].token)
+              if (refresh?.access_token) {
+                const newExpiry = new Date()
+                newExpiry.setDate(newExpiry.getDate() + 60)
+                await updateIntegration(
+                  refresh.access_token,
+                  newExpiry,
+                  found.integrations[0].id
+                )
+              }
+            } catch {
+              // Token refresh failed — user will need to reconnect manually
+            }
           }
         }
       }

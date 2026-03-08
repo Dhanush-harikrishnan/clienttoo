@@ -11,7 +11,7 @@ export const INTEGRATION_CARDS: Props[] = [
   {
     title: 'Connect Instagram',
     description:
-      'Lorem ipsum dolor sit amet consectetur. Mauris scelerisque tincidunt ultrices',
+      'Link your Instagram Business account to automate replies to comments and DMs.',
     icon: <InstagramDuoToneBlue />,
     strategy: 'INSTAGRAM',
     
@@ -19,7 +19,7 @@ export const INTEGRATION_CARDS: Props[] = [
   {
     title: 'Connect Salesforce',
     description:
-      'Lorem ipsum dolor sit amet consectetur. Mauris scelerisque tincidunt ultrices',
+      'Sync your leads and contacts with Salesforce CRM for seamless follow-ups.',
     icon: <SalesForceDuoToneBlue />,
     strategy: 'CRM',
   },

@@ -98,7 +98,7 @@ const AutomationsBreadCrumb = ({ id }: Props) => {
             <AlertDialogCancel className="bg-slate-800 hover:bg-slate-700 border-none text-white">Cancel</AlertDialogCancel>
             <AlertDialogAction 
               className="bg-red-500 hover:bg-red-600 text-white" 
-              onClick={() => deleteAutomation(id)}
+              onClick={() => deleteAutomation()}
               disabled={isDeleting}
             >
               {isDeleting ? <Loader state={true}><span>Deleting...</span></Loader> : "Delete"}

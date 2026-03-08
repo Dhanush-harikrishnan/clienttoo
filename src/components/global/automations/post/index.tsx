@@ -4,13 +4,15 @@ import { useQueryAutomationPosts } from '@/hooks/user-queries'
 import React, { useState } from 'react'
 import TriggerButton from '../trigger-button'
 import { InstagramPostProps } from '@/types/posts.type'
-import { CheckCircle, InstagramIcon } from 'lucide-react'
+import { CheckCircle, InstagramIcon, RefreshCw, AlertTriangle } from 'lucide-react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import Loader from '../../loader'
 import SuccessIndicator from '../success-indicator'
 import { Spinner } from '../../loader/spinner'
+import { usePaths } from '@/hooks/user-nav'
+import Link from 'next/link'
 
 type Props = {
   id: string
@@ -96,13 +98,11 @@ const PostButton = ({ id }: Props) => {
   const hasError = data?.status !== 200
   const isLoading = !data
   const errorMessage = data?.data?.message || data?.data?.error?.message
+  const needsReconnect = data?.data?.action === 'reconnect' || data?.data?.action === 'connect'
+  const { pathname } = usePaths()
 
-  console.log('PostButton data:', { 
-    status: data?.status, 
-    hasData: !!data?.data, 
-    postsCount: instagramPosts.length,
-    errorMessage 
-  })
+  // Build the integrations URL from the current path
+  const integrationsUrl = pathname.replace(/\/automations.*/, '/integrations')
 
   return (
     <>
@@ -124,19 +124,35 @@ const PostButton = ({ id }: Props) => {
               <Spinner />
               <p className="text-gray-400 text-sm mt-3">Loading your Instagram posts...</p>
             </div>
+          ) : needsReconnect ? (
+            <div className="flex flex-col items-center justify-center py-8 bg-slate-800/50 rounded-lg border border-orange-500/30">
+              <AlertTriangle className="text-orange-400 mb-3" size={32} />
+              <p className="text-gray-200 text-sm font-medium">
+                Instagram Connection Issue
+              </p>
+              <p className="text-gray-400 text-xs mt-1 max-w-sm text-center px-4">
+                {errorMessage || 'Your Instagram session has expired or is invalid.'}
+              </p>
+              <Link href={integrationsUrl}>
+                <Button
+                  className="mt-4 bg-gradient-to-br from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-medium gap-2"
+                >
+                  <RefreshCw size={16} />
+                  Reconnect Instagram
+                </Button>
+              </Link>
+              <p className="text-gray-500 text-xs mt-3 max-w-xs text-center px-4">
+                Go to Integrations to reconnect your Instagram Business account, then come back here.
+              </p>
+            </div>
           ) : hasError || instagramPosts.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 bg-slate-800/50 rounded-lg border border-slate-700/50">
               <p className="text-gray-400 text-sm">
                 {instagramPosts.length === 0 ? 'No Instagram posts found' : 'Unable to load posts'}
               </p>
-              <p className="text-gray-600 text-xs mt-1">
-                {errorMessage || 'Check your Instagram connection and try again'}
+              <p className="text-gray-500 text-xs mt-1 max-w-md text-center">
+                {errorMessage || 'Make sure your Instagram account has public posts and try again.'}
               </p>
-              {hasError && (
-                <p className="text-gray-500 text-xs mt-2 max-w-md text-center">
-                  Status: {data?.status} - Make sure your Instagram Business account is properly connected
-                </p>
-              )}
             </div>
           ) : (
             <>

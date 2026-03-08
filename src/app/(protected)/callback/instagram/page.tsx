@@ -16,16 +16,12 @@ const Page = async ({ searchParams }: Props) => {
 
   // Handle Instagram OAuth errors
   if (error) {
-    console.error('🔴 Instagram OAuth Error:', { error, error_reason, error_description })
     return redirect(`/dashboard?error=${error}&reason=${error_reason}`)
   }
 
   if (code) {
-    console.log('🔵 Instagram OAuth code received:', code.substring(0, 20) + '...')
     const cleanCode = code.split('#_')[0]
     const user = await onIntegrate(cleanCode)
-    
-    console.log('🔵 Integration result:', { status: user.status })
     
     if (user.status === 200) {
       return redirect(

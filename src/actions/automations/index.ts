@@ -15,6 +15,7 @@ import {
   updateAutomation,
 } from './queries'
 import { client } from '@/lib/prisma'
+import { refreshToken } from '@/lib/fetch'
 
 export const createAutomations = async (id?: string) => {
   const user = await onCurrentUser()
@@ -182,22 +183,63 @@ export const getProfilePosts = async () => {
     const profile = await findUser(user.id)
     
     if (!profile || !profile.integrations || !profile.integrations[0]) {
-      return { status: 404, data: { message: 'Profile or integrations not found' } }
+      return { 
+        status: 404, 
+        data: { 
+          message: 'No Instagram account connected',
+          action: 'connect'
+        } 
+      }
     }
 
     const integration = profile.integrations[0]
+    let token = integration.token
 
-    const url = `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${integration.token}`
+    // Check if the token is expired and try to refresh it
+    if (integration.expiresAt && new Date(integration.expiresAt) < new Date()) {
+      try {
+        const refreshed = await refreshToken(token)
+        if (refreshed?.access_token) {
+          token = refreshed.access_token
+          // Update the stored token
+          const newExpiry = new Date()
+          newExpiry.setDate(newExpiry.getDate() + 60)
+          await client.integrations.update({
+            where: { id: integration.id },
+            data: { token: refreshed.access_token, expiresAt: newExpiry },
+          })
+        }
+      } catch {
+        return {
+          status: 401,
+          data: {
+            message: 'Your Instagram token has expired. Please reconnect your account.',
+            action: 'reconnect'
+          }
+        }
+      }
+    }
+
+    const url = `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${token}`
     
     const response = await fetch(url)
     const parsed = await response.json()
 
     if (parsed.error) {
+      // Token is invalid — prompt reconnect
+      const errMsg = parsed.error.message || 'Instagram API error'
+      const isTokenError = errMsg.toLowerCase().includes('token') 
+        || errMsg.toLowerCase().includes('session')
+        || parsed.error.code === 190
+
       return { 
         status: 400, 
         data: { 
-          message: parsed.error.message || 'Instagram API error',
-          error: parsed.error 
+          message: isTokenError 
+            ? 'Your Instagram session has expired or is invalid. Please reconnect your account.'
+            : errMsg,
+          error: parsed.error,
+          action: isTokenError ? 'reconnect' : undefined
         } 
       }
     }

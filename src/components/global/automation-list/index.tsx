@@ -81,7 +81,13 @@ const AutomationCard = ({
         <div className="flex flex-col flex-1 items-start">
           <h2 className="text-xl font-semibold">{automation.name}</h2>
           <p className="text-[#9B9CA0] text-sm font-light mb-2">
-            This is from the comment
+            {automation.listener
+              ? automation.listener.listener === 'GEMINI' || automation.listener.prompt?.startsWith('[GEMINI_AI_MODE]')
+                ? 'AI-powered auto-reply'
+                : 'Standard auto-reply'
+              : automation.triggerType
+                ? `Trigger: ${automation.triggerType === 'COMMENT' ? 'Comments' : 'Direct Messages'}`
+                : 'No trigger configured'}
           </p>
 
           {automation.keywords && automation.keywords.length > 0 ? (

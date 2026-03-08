@@ -7,14 +7,16 @@ import { AUTOMATION_TRIGGERS } from '@/constants/automation'
 import { useTriggers } from '@/hooks/use-automations'
 import { cn } from '@/lib/utils'
 import Keywords from './keywords'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, CheckCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Loader from '../../loader'
 
 type Props = {
   id: string
 }
 
 const Trigger = ({ id }: Props) => {
-  const { type, onSetTrigger, isPending } = useTriggers(id)
+  const { type, onSetTrigger, onSaveTriggerType, isPending, saved } = useTriggers(id)
   const { data } = useQueryAutomation(id)
 
   if (data?.data && data?.data?.triggerType) {
@@ -66,6 +68,30 @@ const Trigger = ({ id }: Props) => {
           </div>
           
           <Keywords id={id} />
+
+          {/* Save trigger button */}
+          {type && (
+            <Button
+              onClick={onSaveTriggerType}
+              disabled={isPending || saved}
+              className={cn(
+                'w-full py-5 rounded-xl font-medium transition-all',
+                saved
+                  ? 'bg-green-600 hover:bg-green-600 text-white'
+                  : 'bg-gradient-to-br from-[#3352CC] to-[#1C2D70] hover:opacity-80 text-white'
+              )}
+            >
+              <Loader state={isPending}>
+                {saved ? (
+                  <span className="flex items-center gap-2">
+                    <CheckCircle size={16} /> Trigger Saved
+                  </span>
+                ) : (
+                  `Save ${type === 'COMMENT' ? 'Comment' : 'DM'} Trigger`
+                )}
+              </Loader>
+            </Button>
+          )}
         </div>
       </TriggerButton>
     </>

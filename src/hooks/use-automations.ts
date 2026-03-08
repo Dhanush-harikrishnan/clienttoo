@@ -102,24 +102,26 @@ export const useListener = (id: string) => {
 
 export const useTriggers = (id: string) => {
   const [type, setType] = useState<'COMMENT' | 'DM'>()
+  const [saved, setSaved] = useState(false)
   const { isPending, mutate } = useMutationData(
     ['add-trigger'],
     (data: { type: 'COMMENT' | 'DM' }) => onSaveTrigger(id, data.type),
-    ['automation-info', id]
+    ['automation-info', id],
+    () => setSaved(true)
   )
 
-  const onSetTrigger = (type: 'COMMENT' | 'DM') => {
-    setType(type)
+  const onSetTrigger = (triggerType: 'COMMENT' | 'DM') => {
+    setType(triggerType)
+    setSaved(false)
   }
 
-  useEffect(() => {
+  const onSaveTriggerType = () => {
     if (type) {
       mutate({ type })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type])
+  }
 
-  return { onSetTrigger, isPending, type }
+  return { onSetTrigger, onSaveTriggerType, isPending, type, saved }
 }
 
 export const useKeywords = (id: string) => {

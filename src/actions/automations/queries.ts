@@ -78,8 +78,6 @@ export const addListener = async (
   reply?: string
 ) => {
   try {
-    console.log("DB addListener called with:", { automationId, listener, prompt, reply });
-    
     // Check if listener already exists for this automation
     const existingListener = await client.listener.findUnique({
       where: { automationId }

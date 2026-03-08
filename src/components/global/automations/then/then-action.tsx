@@ -5,7 +5,6 @@ import TriggerButton from '../trigger-button'
 import { AUTOMATION_LISTENERS } from '@/constants/automation'
 import { cn } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Loader from '../../loader'
 import SuccessIndicator from '../success-indicator'
@@ -25,12 +24,10 @@ const ThenAction = ({ id }: Props) => {
     success
   } = useListener(id)
 
-  // Create a wrapper for the form submission to add debugging
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Submitting form with listener type:", Listener);
-    onFormSubmit(e);
-  };
+    e.preventDefault()
+    onFormSubmit(e)
+  }
 
   return (
     <>
@@ -53,7 +50,7 @@ const ThenAction = ({ id }: Props) => {
                 {listener.icon}
                 <p>{listener.label}</p>
               </div>
-              <p>{listener.description}</p>
+              <p className="text-sm text-gray-400">{listener.description}</p>
             </div>
           ))}
           
@@ -63,7 +60,7 @@ const ThenAction = ({ id }: Props) => {
               className="p-3 bg-background-90 rounded-xl mt-3 flex flex-col gap-y-5"
               onSubmit={handleFormSubmit}
             >
-              {/* Hidden input for reply field that explicitly has an empty string value */}
+              {/* Hidden input for reply field */}
               <input 
                 type="hidden" 
                 {...register('reply')} 
@@ -73,23 +70,31 @@ const ThenAction = ({ id }: Props) => {
               
               {Listener === 'MESSAGE' ? (
                 <div className="flex flex-col gap-y-1">
-                  <label className="text-sm text-muted-foreground">Message</label>
+                  <label className="text-sm text-muted-foreground">
+                    Auto-reply message
+                  </label>
                   <Textarea
-                    className="h-32 bg-background-100"
+                    className="h-32 bg-background-100 placeholder:text-gray-500 placeholder:italic"
                     {...register('prompt')}
-                    placeholder="Hey, thanks for your message!"
+                    placeholder="e.g. Hey, thanks for your message! We'll get back to you soon."
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    This message will be sent automatically when the trigger fires.
+                  </p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-y-1">
                   <label className="text-sm text-muted-foreground">
-                    AI prompt
+                    AI prompt instructions
                   </label>
                   <Textarea
-                    className="h-32 bg-background-100"
+                    className="h-32 bg-background-100 placeholder:text-gray-500 placeholder:italic"
                     {...register('prompt')}
-                    placeholder="Answer like a customer support agent"
+                    placeholder="e.g. Answer like a friendly customer support agent. Keep responses under 3 sentences."
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Describe how the AI should respond. Be specific for best results.
+                  </p>
                 </div>
               )}
               <Button 
@@ -97,9 +102,9 @@ const ThenAction = ({ id }: Props) => {
                 disabled={isPending}
                 className="flex items-center gap-2"
               >
-                {isPending ? <Loader state={true}><span>Loading...</span></Loader> : (
+                {isPending ? <Loader state={true}><span>Saving...</span></Loader> : (
                   <>
-                    <span>Save</span>
+                    <span>Save Response</span>
                     {success && <CheckCircle size={16} className="text-green-400" />}
                   </>
                 )}

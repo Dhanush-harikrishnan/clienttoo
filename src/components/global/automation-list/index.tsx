@@ -63,7 +63,7 @@ const AutomationCard = ({
     e.preventDefault()
     e.stopPropagation()
     if (confirmDelete) {
-      mutate({})
+      mutate()
       setConfirmDelete(false)
     } else {
       setConfirmDelete(true)
